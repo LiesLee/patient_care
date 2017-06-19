@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/CommonLibrary/CommonLibrary.iml" filepath="$PROJECT_DIR$/CommonLibrary/CommonLibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Ultra-Pull-To-Refresh/Ultra-Pull-To-Refresh.iml" filepath="$PROJECT_DIR$/Ultra-Pull-To-Refresh/Ultra-Pull-To-Refresh.iml" />
+      <module fileurl="file://$PROJECT_DIR$/patient_care.iml" filepath="$PROJECT_DIR$/patient_care.iml" />
+      <module fileurl="file://$PROJECT_DIR$/patient_care_app/patient_care_app.iml" filepath="$PROJECT_DIR$/patient_care_app/patient_care_app.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,14 @@
+<!--
+  ~ Copyright (c) 2016. Ted Park. All Rights Reserved
+  -->
+
+<resources>
+
+
+
+    <!--<string name="app_name">Pictures</string>-->
+
+    <string name="progress_title">Processing..</string>
+
+
+</resources>
