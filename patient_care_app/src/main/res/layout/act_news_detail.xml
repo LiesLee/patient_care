@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:background="@color/white"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary">
+
+        <LinearLayout
+            android:id="@+id/ll_goback"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="match_parent"
+            android:background="@drawable/selector_default_click_bg"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:scaleType="centerCrop"
+                android:layout_marginRight="10dp"
+                android:background="@mipmap/icon_back_white" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:maxWidth="200dp"
+            android:singleLine="true"
+            android:text="标题"
+            android:textColor="@color/white"
+            android:textSize="25dp"/>
+
+    </android.support.v7.widget.Toolbar>
+
+
+    <ScrollView
+        android:scrollbars="none"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:padding="15dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_marginTop="5dp"
+                android:textColor="@color/text_black"
+                android:layout_marginBottom="15dp"
+                android:textStyle="bold"
+                android:textSize="25dp"
+                android:text="高血压日常饮食注意事项"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/tv_date"
+                android:text="发表于 2017-06-21  00:06"
+                android:textColor="@color/grey"
+                android:textSize="20dp"
+                android:singleLine="true"
+                android:layout_marginBottom="15dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+
+
+            <LinearLayout
+                android:background="@drawable/shap_bg_stroke_grey"
+                android:orientation="horizontal"
+                android:padding="15dp"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:src="@mipmap/icon_sound"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"/>
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_marginLeft="15dp"
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_sound_title"
+                        android:text="高血压日常饮食注意事项"
+                        android:textColor="@color/text_black"
+                        android:textSize="20dp"
+                        android:singleLine="true"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/tv_sound_subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus"
+                        android:textSize="16.5dp"/>
+
+                    <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+                        android:id="@+id/rvpb_bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:layout_marginTop="10dp"
+                        app:rcBackgroundColor="@color/line_color"
+                        app:rcMax="100"
+                        app:rcProgress="0"
+                        app:rcProgressColor="@color/blue"
+                        app:rcRadius="5dp"
+                        app:rcReverse="false"/>
+
+                    <RelativeLayout
+                        android:layout_marginTop="8dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:textColor="@color/grey"
+                            android:textSize="15dp"
+                            android:text="00:00"
+                            android:layout_alignParentLeft="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                        <TextView
+                            android:textColor="@color/grey"
+                            android:textSize="15dp"
+                            android:text="08:12"
+                            android:layout_alignParentRight="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <RelativeLayout
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="220dp">
+
+                <ImageView
+                    android:id="@+id/iv_video_img"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/img_detail_test"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+                <RelativeLayout
+                    android:id="@+id/rl_has_vidio"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#32000000">
+
+                    <ImageView
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_centerInParent="true"
+                        android:src="@mipmap/icon_play"/>
+
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+
+
+            <TextView
+                android:textSize="20dp"
+                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget."
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:layout_marginTop="15dp"
+                android:id="@+id/iv_img_1"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/img_test_p"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"/>
+
+            <TextView
+                android:layout_marginTop="15dp"
+                android:textSize="20dp"
+                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget."
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:layout_marginTop="15dp"
+                android:id="@+id/iv_img_2"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/img_test_p2"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"/>
+
+            <TextView
+                android:layout_marginTop="15dp"
+                android:textSize="20dp"
+                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget."
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

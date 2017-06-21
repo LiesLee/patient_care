@@ -29,12 +29,12 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:text="点击更新"
+                android:text="有新资讯，点击更新"
                 android:textColor="@color/white"
                 android:textSize="22dp"
                 app:corner="20dp"
                 app:press_color="@color/click_transparent"
-                app:normal_color="@color/pink_blue" />
+                app:normal_color="@color/blue" />
 
         </LinearLayout>
 

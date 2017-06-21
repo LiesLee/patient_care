@@ -67,4 +67,15 @@
 
     </RelativeLayout>
 
+    <View
+        android:background="@color/line_color"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"/>
+
+    <View
+        android:background="#dbecf7"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
+
+
 </LinearLayout>

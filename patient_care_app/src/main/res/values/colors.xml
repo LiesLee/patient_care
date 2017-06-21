@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#1f97f1</color>
+    <color name="colorPrimary">#006799</color>
     <color name="textColorPrimary">#ffffff</color>
-    <color name="colorPrimaryDark">#1f97f1</color>
-    <color name="colorAccent">#1f97f1</color>
+    <color name="colorPrimaryDark">#006799</color>
+    <color name="colorAccent">#006799</color>
 
 
     <!-- 基本颜色 -->
     <color name="white">#FFFFFF</color>
     <color name="black">#282828</color>
     <color name="yellow">#feb700</color>
-    <color name="blue">#1f97f1</color>
+    <color name="blue">#006799</color>
+    <!--<color name="blue">#1f97f1</color>-->
     <color name="red">#FF474F</color>
     <color name="grey">#999999</color>
     <color name="green">#3ba63a</color>
+    <color name="pink_green">#38cd9e</color>
     <color name="transparent">#00000000</color>
     <color name="text_depth_black">#333333</color>
     <color name="toolbar_color_defalt">#1f97f1</color>
