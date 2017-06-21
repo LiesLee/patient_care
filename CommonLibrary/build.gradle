@@ -75,7 +75,7 @@ dependencies {
     //毛玻璃效果
     //compile 'com.github.mmin18:realtimeblurview:1.0.4'
     //进度条
-    //compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
+    compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
     //分段选择控件
     compile 'com.7heaven.widgets:segmentcontrol:1.16'
     //流布局tap
