@@ -6,44 +6,6 @@
     android:background="@color/bg_grey"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/blue">
-
-        <LinearLayout
-            android:id="@+id/ll_goback"
-            android:layout_width="?attr/actionBarSize"
-            android:layout_height="match_parent"
-            android:background="@drawable/selector_default_click_bg"
-            android:gravity="center">
-
-            <ImageView
-                android:id="@+id/iv_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:background="@mipmap/icon_back_white" />
-        </LinearLayout>
-
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="算复发"
-            android:maxLines="1"
-            android:maxLength="8"
-            android:ellipsize="end"
-            android:textColor="@color/white"
-            android:textSize="25dp" />
-
-
-
-    </android.support.v7.widget.Toolbar>
-
 
     <RelativeLayout
         android:layout_weight="1"

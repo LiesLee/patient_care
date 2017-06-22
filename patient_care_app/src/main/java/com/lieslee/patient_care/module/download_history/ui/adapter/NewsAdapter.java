@@ -29,17 +29,20 @@ public class NewsAdapter extends BaseAdapter<String> {
         if(position == 0){
             baseViewHolder.setBackgroundColor(R.id.tv_download_tips, mContext.getResources().getColor(R.color.pink_green));
             baseViewHolder.setText(R.id.tv_download_tips, "已下载");
+            baseViewHolder.setText(R.id.tv_percent, "100.00%");
             baseViewHolder.getView(R.id.ll_progress_layout).setVisibility(View.INVISIBLE);
         }else if(position == 1){
             baseViewHolder.setBackgroundColor(R.id.tv_download_tips, mContext.getResources().getColor(R.color.pink_blue));
             baseViewHolder.setText(R.id.tv_download_tips, "下载中");
             baseViewHolder.getView(R.id.ll_progress_layout).setVisibility(View.VISIBLE);
             rvpb_bar.setProgress(50f);
+            baseViewHolder.setText(R.id.tv_percent, "50.00%");
         }else{
             baseViewHolder.setBackgroundColor(R.id.tv_download_tips, mContext.getResources().getColor(R.color.line_color));
             baseViewHolder.setText(R.id.tv_download_tips, "未下载");
             baseViewHolder.getView(R.id.ll_progress_layout).setVisibility(View.VISIBLE);
-            rvpb_bar.setProgress(2f);
+            rvpb_bar.setProgress(5f);
+            baseViewHolder.setText(R.id.tv_percent, "0.00%");
         }
 
         baseViewHolder.getConvertView().setOnClickListener(new View.OnClickListener() {

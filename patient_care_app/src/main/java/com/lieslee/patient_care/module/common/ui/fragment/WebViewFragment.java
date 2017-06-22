@@ -32,7 +32,6 @@ public class WebViewFragment extends BaseFragment{
 
     @Override
     protected void initView(View fragmentRootView) {
-        findViewById(R.id.toolbar).setVisibility(View.GONE);
         webview = (ProgressWebView) findViewById(R.id.webview);
         pw_loding = (ProgressWheel) findViewById(R.id.pw_loding);
 
