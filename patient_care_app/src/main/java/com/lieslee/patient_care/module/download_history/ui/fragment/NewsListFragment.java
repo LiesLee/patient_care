@@ -20,7 +20,7 @@ import butterknife.Bind;
  * Email: LiesLee@foxmail.com
  */
 @ActivityFragmentInject(contentViewId = R.layout.fra_news)
-public class DownLoadManagerHistoryFragment extends BaseFragment{
+public class NewsListFragment extends BaseFragment{
     @Bind(R.id.ll_pull)
     LinearLayout ll_pull;
 

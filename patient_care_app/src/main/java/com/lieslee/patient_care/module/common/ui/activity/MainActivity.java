@@ -10,7 +10,7 @@ import com.common.base.ui.BaseFragment;
 import com.lieslee.patient_care.R;
 import com.lieslee.patient_care.module.common.ui.fragment.WebViewFragment;
 import com.lieslee.patient_care.module.download_history.ui.adapter.MainFragmentAdapter;
-import com.lieslee.patient_care.module.download_history.ui.fragment.DownLoadManagerHistoryFragment;
+import com.lieslee.patient_care.module.download_history.ui.fragment.NewsListFragment;
 import com.views.NonSwipeableViewPager;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class MainActivity extends BaseActivity {
     @Bind(R.id.tv_news)
     TextView tv_news;
 
-    DownLoadManagerHistoryFragment newsFragment;
+    NewsListFragment newsFragment;
     WebViewFragment webViewFragment;
     List<BaseFragment> fragments;
     private MainFragmentAdapter fragmentAdapter;
@@ -37,7 +37,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void initView() {
         fragments = new ArrayList<>();
-        newsFragment = new DownLoadManagerHistoryFragment();
+        newsFragment = new NewsListFragment();
         webViewFragment = new WebViewFragment();
         Bundle bundle = new Bundle();
         bundle.putString("url", "file:///android_asset/dist/index.html");
