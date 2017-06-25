@@ -1,5 +1,6 @@
 package com.lieslee.patient_care.module.news.ui.activity;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Message;
@@ -15,6 +16,7 @@ import com.common.base.ui.BaseActivity;
 import com.common.utils.DateUtil;
 import com.common.utils.FileUtils;
 import com.lieslee.patient_care.R;
+import com.lieslee.patient_care.module.common.ui.activity.PlayVideoActivity;
 import com.lieslee.patient_care.utils.DialogHelper;
 import com.lieslee.patient_care.utils.UIHelper;
 import com.socks.library.KLog;
@@ -28,6 +30,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import butterknife.Bind;
+import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
+import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
 
 /**
  * Created by LiesLee on 2017/6/21.
@@ -102,6 +106,7 @@ public class NewsDetailActivity extends BaseActivity {
 
         UIHelper.initWebView(baseActivity, webview, pw_loding, "http://www.baidu.com");
         ll_audio.setOnClickListener(this);
+        rl_video.setOnClickListener(this);
 
         iniMediaPlayerListener();
     }
@@ -118,6 +123,10 @@ public class NewsDetailActivity extends BaseActivity {
                 playpause();
                 break;
 
+            case R.id.rl_video :
+               startActivity(new Intent(baseActivity, PlayVideoActivity.class));
+              break;
+
             default:
                 break;
         }
@@ -125,7 +134,7 @@ public class NewsDetailActivity extends BaseActivity {
 
 
     void playpause(){
-        String audioPath = FileUtils.SDPATH + "/DCIM/mp3_test/test_audio.mp3";
+        String audioPath = FileUtils.SDPATH + "/Download/test_audio.mp3";
         if(mPlayer == null) new MediaPlayer();
 
         if(mPlayer.isPlaying()){//正在播放

@@ -1,1 +1,1 @@
-include ':patient_care_app', ':Ultra-Pull-To-Refresh', ':CommonLibrary'
+include ':patient_care_app', ':Ultra-Pull-To-Refresh', ':CommonLibrary', ':jcvideoplayer-lib'

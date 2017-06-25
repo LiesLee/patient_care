@@ -22,8 +22,6 @@ public class PatientCareApplication extends MultiDexApplication {
         super.onCreate();
         instance = this;
         handler = new Handler();
-        KLog.init(BuildConfig.DEBUG);
-        Dexter.initialize(this); //权限封装类
     }
 
     public static PatientCareApplication getInstance() {

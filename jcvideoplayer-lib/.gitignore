@@ -1,0 +1,5 @@
+/build
+*.iml
+.DS_Store
+._.DS_Store
+jcvideoplayer-lib.iml

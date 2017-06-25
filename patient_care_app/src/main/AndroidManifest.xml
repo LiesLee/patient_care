@@ -40,15 +40,17 @@
         android:supportsRtl="true"
         android:largeHeap="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".module.common.ui.activity.MainActivity" android:screenOrientation="portrait">
-
+        <activity android:name=".module.common.ui.activity.LauncherActivity" android:screenOrientation="portrait"
+                  android:theme="@style/AppThemeStartTransparent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
 
         </activity>
+
+        <activity android:name=".module.common.ui.activity.MainActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".module.common.ui.activity.PlayVideoActivity" android:screenOrientation="landscape"/>
 
         <activity android:name=".module.news.ui.activity.NewsDetailActivity" android:screenOrientation="portrait">
 
