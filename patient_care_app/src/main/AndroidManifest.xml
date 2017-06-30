@@ -52,7 +52,7 @@
         <activity android:name=".module.common.ui.activity.MainActivity" android:screenOrientation="portrait"/>
         <activity android:name=".module.common.ui.activity.PlayVideoActivity" android:screenOrientation="landscape"/>
 
-        <activity android:name=".module.news.ui.activity.NewsDetailActivity" android:screenOrientation="portrait">
+        <activity android:name=".module.download_history.ui.activity.NewsDetailActivity" android:screenOrientation="portrait">
 
         </activity>
     </application>

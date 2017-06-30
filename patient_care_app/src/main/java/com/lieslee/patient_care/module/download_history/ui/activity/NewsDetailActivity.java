@@ -1,4 +1,4 @@
-package com.lieslee.patient_care.module.news.ui.activity;
+package com.lieslee.patient_care.module.download_history.ui.activity;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -30,8 +30,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import butterknife.Bind;
-import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
-import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
 
 /**
  * Created by LiesLee on 2017/6/21.
