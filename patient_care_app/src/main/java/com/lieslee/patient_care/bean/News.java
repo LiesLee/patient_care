@@ -1,38 +1,62 @@
 package com.lieslee.patient_care.bean;
 
 /**
+ * news entity
  * Created by LiesLee on 17/6/30.
  */
 
 public class News {
+    /**
+     * Illustrate：
+     *
+     * filename extension = url.substring(lastIndexOf(String str)+1)
+     *
+     * save folder path = {$sd card root} +/patient-care/news/{$new id}/
+     *
+     * cover_image file path = {$folder path} / {$new id}.jpg
+     * audio file path = {$folder path} / {$audio id}.mp3
+     * video file path = {$folder path} / {video id}.mp4
+     * html_download file path = {$folder path} / {$new id}.html
+     *
+     */
 
 
+    /** 0 is not download, 1 is being download, 2 complete  */
+    private int download_status = 0;
+    private float progress = 0.0f;
 
 
     private Audio audio;
     private Video video;
-    /**
-     * id : 2
-     * title : 不知道吧，几样日常凡物竟是控油奇兵，美容师绝不会告诉你的秘方
-     * description : 五月的天气已经和以往的六月一模一样了，走路都能出一身汗，而且脸上总是会有一层油，不仅别人看起来不美观，自己也会觉得不舒服呢。
-     * timestamp : 1498463687
-     * update_time : 2017-06-26 15:54:47
-     * cover_image : http://test.jsb-app.com/lenovo/uploads/20170626/14984636874.jpg
-     * media_type : 1
-     * html_download : http://test.jsb-app.com/lenovo/uploads//html/2.html
-     * audio : {"id":3,"title":"这是个音频","remark":"这款面膜，不但有帮助美白，同时还能控油和收缩毛孔，特别是黄瓜的水分还能帮助保湿补水哟！","url":"http://test.jsb-app.com/lenovo/uploads/audio/14984640381.mp3"}
-     * video : {"id":4,"title":"这是个视频","remark":"","url":"http://test.jsb-app.com/lenovo/uploads/video/11111.mp4"}
-     */
 
     private Long id;
     private String title;
     private String description;
+    /** Sort by time */
     private Long timestamp;
     private String update_time;
     private String cover_image;
-    /** 1 video 、2 audio */
+    /**
+     * 1 video 、2 audio
+     */
     private int media_type;
     private String html_download;
+
+    public int getDownload_status() {
+        return download_status;
+    }
+
+    public void setDownload_status(int download_status) {
+        this.download_status = download_status;
+    }
+
+    public float getProgress() {
+        return progress;
+    }
+
+    public void setProgress(float progress) {
+        this.progress = progress;
+    }
 
     public Long getId() {
         return id;

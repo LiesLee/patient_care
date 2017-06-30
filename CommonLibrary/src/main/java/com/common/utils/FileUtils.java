@@ -232,7 +232,7 @@ public class FileUtils {
 	 */
 	public static String getPath(Context context, boolean isTemporary) {
 		String sdDir = "";
-		String childDir = isTemporary ? "/Vip-time/pro/" : "/Vip-time/";
+		String childDir = isTemporary ? "/patient-care/pro/" : "/patient-care/";
 		boolean sdCardExist = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED); // 判断sd卡是否存在
 		if (sdCardExist) {
 			sdDir = Environment.getExternalStorageDirectory() + childDir;// 获取跟目录
