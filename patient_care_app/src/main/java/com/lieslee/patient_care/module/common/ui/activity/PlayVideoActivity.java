@@ -7,8 +7,8 @@ import android.view.WindowManager;
 
 import com.common.annotation.ActivityFragmentInject;
 import com.common.base.ui.BaseActivity;
-import com.common.utils.FileUtils;
 import com.lieslee.patient_care.R;
+import com.lieslee.patient_care.utils.FileUtils;
 
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;

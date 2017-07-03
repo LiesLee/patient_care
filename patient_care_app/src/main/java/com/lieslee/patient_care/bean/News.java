@@ -1,5 +1,14 @@
 package com.lieslee.patient_care.bean;
 
+import android.content.Context;
+import android.text.TextUtils;
+
+import com.lieslee.patient_care.utils.FileUtils;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * news entity
  * Created by LiesLee on 17/6/30.
@@ -24,7 +33,8 @@ public class News {
     /** 0 is not download, 1 is being download, 2 complete  */
     private int download_status = 0;
     private float progress = 0.0f;
-
+    private List<FileDownLoadStatus> statuses;
+    private boolean isInitStatus = false;
 
     private Audio audio;
     private Video video;
@@ -136,6 +146,69 @@ public class News {
 
     public void setVideo(Video video) {
         this.video = video;
+    }
+
+    public String getFileNameExtension(String url){
+        if (TextUtils.isEmpty(url)) return "";
+        return url.substring(url.lastIndexOf(".")+1);
+    }
+
+    public String getPath(Context context){
+        String sdDir = FileUtils.getPath(context, false);
+        File file = new File(sdDir + "news/" +id);
+        if(!file.exists()){
+            file.mkdir();
+        }
+        return sdDir +id;
+    }
+
+    public String getCoverImagePath(Context context){
+        String path = "";
+        if(TextUtils.isEmpty(cover_image)) return path;
+        return getPath(context)+"/"+ id + getFileNameExtension(cover_image);
+    }
+
+
+    public String getVideoPath(Context context){
+        String path = "";
+        if(video == null) return path;
+        return getPath(context)+"/"+ video.getId() + getFileNameExtension(video.getUrl());
+    }
+
+    public String getAudioPath(Context context){
+        String path = "";
+        if(audio == null) return path;
+        return getPath(context)+"/"+ audio.getId() + getFileNameExtension(audio.getUrl());
+    }
+
+    public String getHtmlPath(Context context){
+        String path = "";
+        if(TextUtils.isEmpty(html_download)) return path;
+        return getPath(context)+"/"+ id + getFileNameExtension(html_download);
+    }
+
+    public void initFileDownloadStatus(){
+        if(!isInitStatus){
+            if(statuses == null) statuses = new ArrayList<>();
+            statuses.add(new FileDownLoadStatus(0, false));
+            if(!TextUtils.isEmpty(cover_image)) statuses.add(new FileDownLoadStatus(1,false));
+            if (audio != null) statuses.add(new FileDownLoadStatus(2, false));
+            if (video!=null) statuses.add(new FileDownLoadStatus(3, false));
+            isInitStatus = true;
+        }
+    }
+
+    public List<FileDownLoadStatus> getFileDownLoadStatus(){
+        if(!isInitStatus) initFileDownloadStatus();
+        return statuses;
+    }
+
+    public float getMowProgress(){
+        float progress = 0.0f;
+        for(FileDownLoadStatus status : getFileDownLoadStatus()){
+            if(status.isDone()) progress = progress+100;
+        }
+        return progress;
     }
 
 
