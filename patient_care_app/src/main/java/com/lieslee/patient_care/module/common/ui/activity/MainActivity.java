@@ -52,6 +52,8 @@ public class MainActivity extends BaseActivity {
         tv_news.setOnClickListener(this);
         tv_suanfufa.setOnClickListener(this);
 
+
+
     }
 
     @Override

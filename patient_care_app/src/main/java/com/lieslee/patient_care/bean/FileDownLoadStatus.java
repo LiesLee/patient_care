@@ -9,6 +9,8 @@ public class FileDownLoadStatus {
     /** 0:html、1:cover image、2：audio、3：video  */
     private int type;
     private boolean isDone;
+    private float progress;
+
 
     public FileDownLoadStatus(int type, boolean isDone) {
         this.type = type;
@@ -29,5 +31,13 @@ public class FileDownLoadStatus {
 
     public void setDone(boolean done) {
         isDone = done;
+    }
+
+    public float getProgress() {
+        return progress;
+    }
+
+    public void setProgress(float progress) {
+        this.progress = progress;
     }
 }

@@ -150,7 +150,7 @@ public class News {
 
     public String getFileNameExtension(String url){
         if (TextUtils.isEmpty(url)) return "";
-        return url.substring(url.lastIndexOf(".")+1);
+        return url.substring(url.lastIndexOf("."));
     }
 
     public String getPath(Context context){
@@ -206,7 +206,11 @@ public class News {
     public float getMowProgress(){
         float progress = 0.0f;
         for(FileDownLoadStatus status : getFileDownLoadStatus()){
-            if(status.isDone()) progress = progress+100;
+            if(status.isDone()){
+                progress = progress+100;
+            }else{
+                progress = progress + status.getProgress();
+            }
         }
         return progress;
     }
