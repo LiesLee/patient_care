@@ -190,10 +190,10 @@ public class News {
     public void initFileDownloadStatus(){
         if(!isInitStatus){
             if(statuses == null) statuses = new ArrayList<>();
-            statuses.add(new FileDownLoadStatus(0, false));
-            if(!TextUtils.isEmpty(cover_image)) statuses.add(new FileDownLoadStatus(1,false));
-            if (audio != null) statuses.add(new FileDownLoadStatus(2, false));
-            if (video!=null) statuses.add(new FileDownLoadStatus(3, false));
+            statuses.add(new FileDownLoadStatus(0, html_download, false));
+            if(!TextUtils.isEmpty(cover_image)) statuses.add(new FileDownLoadStatus(1,cover_image,false));
+            if (audio != null) statuses.add(new FileDownLoadStatus(2,audio.getUrl(), false));
+            if (video!=null) statuses.add(new FileDownLoadStatus(3,video.getUrl(), false));
             isInitStatus = true;
         }
     }
@@ -203,7 +203,7 @@ public class News {
         return statuses;
     }
 
-    public float getMowProgress(){
+    public float getNowProgress(){
         float progress = 0.0f;
         for(FileDownLoadStatus status : getFileDownLoadStatus()){
             if(status.isDone()){

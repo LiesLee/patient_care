@@ -1,5 +1,7 @@
 package com.lieslee.patient_care.module.download_history.ui.fragment;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -17,10 +19,15 @@ import com.lai.library.ButtonStyle;
 import com.lieslee.patient_care.R;
 import com.lieslee.patient_care.bean.News;
 import com.lieslee.patient_care.bean.NewsListResponse;
+import com.lieslee.patient_care.event.ME_StartDownLoad;
 import com.lieslee.patient_care.module.download_history.presenter.NewsListPresenter;
 import com.lieslee.patient_care.module.download_history.ui.adapter.NewsAdapter;
 import com.lieslee.patient_care.module.download_history.view.NewsListView;
 import com.socks.library.KLog;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Arrays;
 
@@ -57,7 +64,11 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
         findViewById(R.id.tv_title).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startDownload();
+                if(mAdapter.findDownloadItem()){ // 开始下载
+                    startDownload();
+                }else{
+                    KLog.e("=======全部下载完成=======");
+                }
             }
         });
     }
@@ -85,27 +96,26 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
     }
 
     public void startDownload(){
-        News news = mAdapter.getData().get(1);
-
+        News news = mAdapter.getData().get(mAdapter.getDownPosition());
 
         if(!TextUtils.isEmpty(news.getCoverImagePath(baseActivity))){
             Aria.download(this)
                     .load(news.getCover_image())
                     .setDownloadPath(news.getCoverImagePath(baseActivity))	//文件保存路径
-                    .add();
+                    .start();
         }
 
         if(!TextUtils.isEmpty(news.getAudioPath(baseActivity))){
             Aria.download(this)
                     .load(news.getAudio().getUrl())
                     .setDownloadPath(news.getAudioPath(baseActivity))	//文件保存路径
-                    .add();
+                    .start();
         }
         if(!TextUtils.isEmpty(news.getVideoPath(baseActivity))){
             Aria.download(this)
                     .load(news.getVideo().getUrl())
                     .setDownloadPath(news.getVideoPath(baseActivity))	//文件保存路径
-                    .add();
+                    .start();
         }
 
 
@@ -159,27 +169,54 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
             case DownloadEntity.STATE_WAIT:
             case DownloadEntity.STATE_OTHER:
             case DownloadEntity.STATE_FAIL:
-                str = "开始";
+                str = "等待/失败/";
+                KLog.d(str);
                 break;
             case DownloadEntity.STATE_STOP:
                 str = "暂停";
+                KLog.d(str);
                 break;
             case DownloadEntity.STATE_PRE:
             case DownloadEntity.STATE_POST_PRE:
+                break;
             case DownloadEntity.STATE_RUNNING:
-                str = "下载中...";
+                mAdapter.updateState(item);
+
                 break;
             case DownloadEntity.STATE_COMPLETE:
-                str = "下载完成";
+                mAdapter.updateState(item);
+
                 break;
         }
 
-        progress =  item.getFileSize() == 0 || item.getCurrentProgress() == 0 ? 0 : (item.getCurrentProgress() * 100 / item.getFileSize());
-        KLog.e("====================================");
-        KLog.d(str);
-        KLog.d(item.getDownloadUrl());
-        KLog.d(progress+"%");
-        KLog.e("====================================");
+
+    }
+
+
+
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onDestroyView() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroyView();
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(ME_StartDownLoad event) {
+        if(event.type == 0){
+            if(mAdapter.findDownloadItem()){ // 开始下载
+                startDownload();
+            }else{
+                KLog.e("=======全部下载完成=======");
+            }
+        }
     }
 
 }
