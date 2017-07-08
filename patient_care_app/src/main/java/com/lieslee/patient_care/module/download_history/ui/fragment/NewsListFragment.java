@@ -102,20 +102,20 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
             Aria.download(this)
                     .load(news.getCover_image())
                     .setDownloadPath(news.getCoverImagePath(baseActivity))	//文件保存路径
-                    .start();
+                    .add();
         }
 
         if(!TextUtils.isEmpty(news.getAudioPath(baseActivity))){
             Aria.download(this)
                     .load(news.getAudio().getUrl())
                     .setDownloadPath(news.getAudioPath(baseActivity))	//文件保存路径
-                    .start();
+                    .add();
         }
         if(!TextUtils.isEmpty(news.getVideoPath(baseActivity))){
             Aria.download(this)
                     .load(news.getVideo().getUrl())
                     .setDownloadPath(news.getVideoPath(baseActivity))	//文件保存路径
-                    .start();
+                    .add();
         }
 
 
@@ -168,9 +168,11 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
         switch (item.getState()) {
             case DownloadEntity.STATE_WAIT:
             case DownloadEntity.STATE_OTHER:
+                break;
             case DownloadEntity.STATE_FAIL:
-                str = "等待/失败/";
+                str = "失败";
                 KLog.d(str);
+                mAdapter.updateState(item);
                 break;
             case DownloadEntity.STATE_STOP:
                 str = "暂停";

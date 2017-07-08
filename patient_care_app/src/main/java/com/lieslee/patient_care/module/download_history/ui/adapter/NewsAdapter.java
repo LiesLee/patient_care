@@ -22,6 +22,7 @@ import com.socks.library.KLog;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -46,16 +47,16 @@ public class NewsAdapter extends BaseAdapter<News> {
         baseViewHolder.getView(R.id.tv_content).setVisibility(TextUtils.isEmpty(data.getDescription()) ? View.INVISIBLE : View.VISIBLE);
         baseViewHolder.setText(R.id.tv_content, data.getDescription());
 
-        if(data.getMedia_type() == 1){ //has video
+        if (data.getMedia_type() == 1) { //has video
             ImageView iv_item_img = baseViewHolder.getView(R.id.iv_item_img);
-            if(TextUtils.isEmpty(data.getCover_image())){ //no cover
+            if (TextUtils.isEmpty(data.getCover_image())) { //no cover
                 iv_item_img.setImageResource(R.mipmap.bg_default);
-            }else{
+            } else {
                 String url = data.getCover_image();
-                GlideUtil.loadImage((Activity)mContext, url, iv_item_img);
+                GlideUtil.loadImage((Activity) mContext, url, iv_item_img);
             }
             baseViewHolder.setVisible(R.id.rl_media, true);
-        }else{
+        } else {
             baseViewHolder.setVisible(R.id.rl_media, false);
         }
 
@@ -63,25 +64,33 @@ public class NewsAdapter extends BaseAdapter<News> {
         rvpb_bar.setMax(data.getFileDownLoadStatus().size() * 100);
 
 
-        if(data.getDownload_status() == 0){
+        if (data.getDownload_status() == 0) {
 
             baseViewHolder.setBackgroundColor(R.id.tv_download_tips, mContext.getResources().getColor(R.color.line_color));
-            baseViewHolder.setText(R.id.tv_download_tips, "未下载");
+            baseViewHolder.setText(R.id.tv_download_tips, "等待中");
             baseViewHolder.getView(R.id.ll_progress_layout).setVisibility(View.VISIBLE);
             rvpb_bar.setProgress(5f);
             baseViewHolder.setText(R.id.tv_percent, "0.00%");
 
-        }else if(data.getDownload_status() == 1){
+        } else if (data.getDownload_status() == 1) {
             baseViewHolder.setBackgroundColor(R.id.tv_download_tips, mContext.getResources().getColor(R.color.pink_blue));
             baseViewHolder.setText(R.id.tv_download_tips, "下载中");
             baseViewHolder.getView(R.id.ll_progress_layout).setVisibility(View.VISIBLE);
             rvpb_bar.setProgress(data.getNowProgress());
-            baseViewHolder.setText(R.id.tv_percent, data.getNowProgress() * 100 / (data.getFileDownLoadStatus().size() * 100) +"%");
-        }else if(data.getDownload_status() == 2){
+
+            float progress = data.getNowProgress() * 100 / (data.getFileDownLoadStatus().size() * 100);
+            baseViewHolder.setText(R.id.tv_percent, new BigDecimal(progress).setScale(2, BigDecimal.ROUND_HALF_UP).floatValue() + "%");
+        } else if (data.getDownload_status() == 2) {
             baseViewHolder.setBackgroundColor(R.id.tv_download_tips, mContext.getResources().getColor(R.color.pink_green));
             baseViewHolder.setText(R.id.tv_download_tips, "已完成");
             baseViewHolder.setText(R.id.tv_percent, "100.00%");
             baseViewHolder.getView(R.id.ll_progress_layout).setVisibility(View.INVISIBLE);
+        }else if (data.getDownload_status() == -1){
+            baseViewHolder.setBackgroundColor(R.id.tv_download_tips, mContext.getResources().getColor(R.color.red));
+            baseViewHolder.setText(R.id.tv_download_tips, "下载失败");
+            baseViewHolder.setText(R.id.tv_percent, "0.00%");
+            rvpb_bar.setProgress(5f);
+            baseViewHolder.getView(R.id.ll_progress_layout).setVisibility(View.VISIBLE);
         }
 
         baseViewHolder.getConvertView().setOnClickListener(new View.OnClickListener() {
@@ -95,16 +104,17 @@ public class NewsAdapter extends BaseAdapter<News> {
     }
 
 
-    public void updateState(DownloadEntity downloadEntity){
-        if(downloadEntity.getState() == DownloadEntity.STATE_RUNNING){ //正在下载...
+    public void updateState(DownloadEntity downloadEntity) {
+        if (downloadEntity.getState() == DownloadEntity.STATE_RUNNING) { //正在下载...
             News news = getData().get(downPosition);
-            if(news!=null){
+            if (news != null) {
                 news.setDownload_status(1);
-                for(FileDownLoadStatus status : news.getFileDownLoadStatus()){
-                    if(downloadEntity.getDownloadUrl().equals(status.getUrl())){
-                        float progress =  downloadEntity.getFileSize() == 0 || downloadEntity.getCurrentProgress() == 0 ?
+                for (FileDownLoadStatus status : news.getFileDownLoadStatus()) {
+                    if (downloadEntity.getDownloadUrl().equals(status.getUrl())) {
+                        float progress = downloadEntity.getFileSize() == 0 || downloadEntity.getCurrentProgress() == 0 ?
                                 0 : (downloadEntity.getCurrentProgress() * 100 / downloadEntity.getFileSize());
-                        status.setProgress(progress);
+                        BigDecimal b = new BigDecimal(progress);
+                        status.setProgress(b.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue());
                         status.setDone(false);
                         break;
                     }
@@ -115,11 +125,11 @@ public class NewsAdapter extends BaseAdapter<News> {
             }
 
 
-        }else if(downloadEntity.getState() == DownloadEntity.STATE_COMPLETE){ //完成
+        } else if (downloadEntity.getState() == DownloadEntity.STATE_COMPLETE) { //完成
             News news = getData().get(downPosition);
-            if(news!=null){
-                for(FileDownLoadStatus status : news.getFileDownLoadStatus()){
-                    if(downloadEntity.getDownloadUrl().equals(status.getUrl())){
+            if (news != null) {
+                for (FileDownLoadStatus status : news.getFileDownLoadStatus()) {
+                    if (downloadEntity.getDownloadUrl().equals(status.getUrl())) {
                         KLog.json(FastJsonUtil.t2Json2(status));
                         status.setProgress(100);
                         status.setDone(true);
@@ -128,13 +138,13 @@ public class NewsAdapter extends BaseAdapter<News> {
 
                 }
                 boolean isAllDone = true;
-                for(FileDownLoadStatus status : news.getFileDownLoadStatus()){
-                    if(!status.isDone()){
+                for (FileDownLoadStatus status : news.getFileDownLoadStatus()) {
+                    if (!status.isDone()) {
                         isAllDone = false;
                         break;
                     }
                 }
-                if(isAllDone){//下载完成
+                if (isAllDone) {//下载完成
                     news.setDownload_status(2);
                     news.setProgress(news.getFileDownLoadStatus().size() * 100);
                     KLog.e("news下载完成");
@@ -142,6 +152,24 @@ public class NewsAdapter extends BaseAdapter<News> {
                     //发送消息通知观察者
                     EventBus.getDefault().post(new ME_StartDownLoad(0));
                 }
+            }
+        } else if (downloadEntity.getState() == DownloadEntity.STATE_FAIL) {
+            News news = getData().get(downPosition);
+            if (news != null) {
+                for (FileDownLoadStatus status : news.getFileDownLoadStatus()) {
+                    KLog.json(FastJsonUtil.t2Json2(status));
+                    status.setProgress(0);
+                    status.setDone(false);
+                    break;
+                }
+
+                news.setDownload_status(-1);
+                news.setProgress(0);
+                KLog.e("news下载失败");
+                KLog.json(FastJsonUtil.t2Json2(news));
+                //发送消息通知观察者
+                EventBus.getDefault().post(new ME_StartDownLoad(0));
+
             }
         }
 
@@ -156,11 +184,11 @@ public class NewsAdapter extends BaseAdapter<News> {
         this.downPosition = downPosition;
     }
 
-    public boolean findDownloadItem(){
+    public boolean findDownloadItem() {
         boolean hasDownload = false;
-        for(int i = 0;i<mData.size();i++){
+        for (int i = 0; i < mData.size(); i++) {
             News news = mData.get(i);
-            if(news.getDownload_status() != 2 ){
+            if (news.getDownload_status() == 0) {
                 downPosition = i;
                 hasDownload = true;
                 break;

@@ -30,7 +30,7 @@ public class News {
      */
 
 
-    /** 0 is not download, 1 is being download, 2 complete  */
+    /** -1 is download failed, 0 is not download, 1 is being download, 2 complete  */
     private int download_status = 0;
     private float progress = 0.0f;
     private List<FileDownLoadStatus> statuses;
