@@ -51,11 +51,11 @@ public class News {
      */
     private int media_type;
     private String html_download;
-
+    /** -1 is download failed, 0 is not download, 1 is being download, 2 complete  */
     public int getDownload_status() {
         return download_status;
     }
-
+    /** -1 is download failed, 0 is not download, 1 is being download, 2 complete  */
     public void setDownload_status(int download_status) {
         this.download_status = download_status;
     }
@@ -171,13 +171,13 @@ public class News {
 
     public String getVideoPath(Context context){
         String path = "";
-        if(video == null) return path;
+        if(video == null || TextUtils.isEmpty(video.getUrl())) return path;
         return getPath(context)+"/"+ video.getId() + getFileNameExtension(video.getUrl());
     }
 
     public String getAudioPath(Context context){
         String path = "";
-        if(audio == null) return path;
+        if(audio == null || TextUtils.isEmpty(audio.getUrl())) return path;
         return getPath(context)+"/"+ audio.getId() + getFileNameExtension(audio.getUrl());
     }
 
@@ -190,10 +190,10 @@ public class News {
     public void initFileDownloadStatus(){
         if(!isInitStatus){
             if(statuses == null) statuses = new ArrayList<>();
-            statuses.add(new FileDownLoadStatus(0, html_download, false));
+            if(!TextUtils.isEmpty(html_download)) statuses.add(new FileDownLoadStatus(0, html_download, false));
             if(!TextUtils.isEmpty(cover_image)) statuses.add(new FileDownLoadStatus(1,cover_image,false));
-            if (audio != null) statuses.add(new FileDownLoadStatus(2,audio.getUrl(), false));
-            if (video!=null) statuses.add(new FileDownLoadStatus(3,video.getUrl(), false));
+            if (audio != null && !TextUtils.isEmpty(audio.getUrl())) statuses.add(new FileDownLoadStatus(2,audio.getUrl(), false));
+            if (video!=null && !TextUtils.isEmpty(video.getUrl())) statuses.add(new FileDownLoadStatus(3,video.getUrl(), false));
             isInitStatus = true;
         }
     }
@@ -207,7 +207,7 @@ public class News {
         float progress = 0.0f;
         for(FileDownLoadStatus status : getFileDownLoadStatus()){
             if(status.isDone()){
-                progress = progress+100;
+                progress = progress + 100;
             }else{
                 progress = progress + status.getProgress();
             }

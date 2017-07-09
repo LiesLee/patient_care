@@ -15,11 +15,16 @@ import android.webkit.WebViewClient;
 
 import com.common.base.ui.BaseActivity;
 import com.lieslee.patient_care.R;
+import com.lieslee.patient_care.bean.News;
 import com.lieslee.patient_care.module.common.ui.fragment.WebViewFragment;
 import com.views.ProgressWebView;
 import com.views.ProgressWheel;
 import com.views.util.ToastUtil;
 import com.views.util.ViewUtil;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by LiesLee on 16/9/29.
@@ -130,6 +135,21 @@ public class UIHelper {
 
     }
 
+    public static long getLastTimeOnList(List<News> list){
+        long time = 0;
+        for(News news : list){
+            if(news.getTimestamp() > time) time = news.getTimestamp();
+        }
+        return time;
+    }
 
+    public static void sortNews(List<News> list){
+        Collections.sort(list, new Comparator<News>() {
+            @Override
+            public int compare(News o1, News o2) {  //Descending order
+                return o1.getTimestamp() < o2.getTimestamp() ? 1 : -1;
+            }
+        });
+    }
 
 }

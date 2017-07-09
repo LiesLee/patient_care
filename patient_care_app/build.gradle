@@ -77,8 +77,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'org.greenrobot:greendao:3.2.2' // add library
-    compile 'com.arialyy.aria:aria-core:3.2.0'
-    annotationProcessor 'com.arialyy.aria:aria-compiler:3.2.0'
+    compile 'com.liulishuo.filedownloader:library:1.6.0'
     compile project(':CommonLibrary')
     testCompile 'junit:junit:4.12'
     compile project(':jcvideoplayer-lib')
