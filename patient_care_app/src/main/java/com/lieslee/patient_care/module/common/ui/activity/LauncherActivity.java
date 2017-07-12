@@ -20,6 +20,7 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.lieslee.patient_care.BuildConfig;
 import com.lieslee.patient_care.R;
 import com.lieslee.patient_care.application.PatientCareApplication;
+import com.lieslee.patient_care.dao.GreenDaoManager;
 import com.lieslee.patient_care.utils.DialogHelper;
 import com.socks.library.KLog;
 
@@ -57,6 +58,7 @@ public class LauncherActivity extends BaseActivity implements MultiplePermission
         Dexter.initialize(PatientCareApplication.getInstance()); //权限封装类
         //  获取权限
         Dexter.checkPermissions(LauncherActivity.this, pList);
+        GreenDaoManager.getInstance();
         //初始化SDK
         KLog.init(BuildConfig.DEBUG);
 
@@ -111,11 +113,11 @@ public class LauncherActivity extends BaseActivity implements MultiplePermission
         timer.schedule(new TimerTask() {
             public void run() {
                 c_time = System.currentTimeMillis();
-                if(c_time - time > 2000){ //大于10秒直接跳过
+                if(c_time - time > 1500){ //大于*秒直接跳过
                     gotoMainActivity();
                 }
             }
-        }, 0,1000);// 这里百毫秒
+        }, 0, 1000);// 这里百毫秒
     }
 
     private void gotoMainActivity() {

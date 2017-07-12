@@ -5,15 +5,28 @@ import android.text.TextUtils;
 
 import com.lieslee.patient_care.utils.FileUtils;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Keep;
+import org.greenrobot.greendao.annotation.OrderBy;
+import org.greenrobot.greendao.annotation.ToOne;
+import org.greenrobot.greendao.annotation.Transient;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.DaoException;
+import com.lieslee.patient_care.dao.gen.DaoSession;
+import com.lieslee.patient_care.dao.gen.VideoDao;
+import com.lieslee.patient_care.dao.gen.AudioDao;
+import com.lieslee.patient_care.dao.gen.NewsDao;
 
 /**
  * news entity
  * Created by LiesLee on 17/6/30.
  */
-
+@Entity
 public class News {
     /**
      * Illustrate：
@@ -33,13 +46,17 @@ public class News {
     /** -1 is download failed, 0 is not download, 1 is being download, 2 complete  */
     private int download_status = 0;
     private float progress = 0.0f;
+    @Transient
     private List<FileDownLoadStatus> statuses;
     private boolean isInitStatus = false;
-
+    @ToOne(joinProperty = "audio_id")
     private Audio audio;
+    @ToOne(joinProperty = "video_id")
     private Video video;
-
+    @Id
     private Long id;
+    private Long video_id;
+    private Long audio_id;
     private String title;
     private String description;
     /** Sort by time */
@@ -51,6 +68,37 @@ public class News {
      */
     private int media_type;
     private String html_download;
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 255022283)
+    private transient NewsDao myDao;
+    @Generated(hash = 1990584413)
+    public News(int download_status, float progress, boolean isInitStatus, Long id, Long video_id, Long audio_id, String title,
+            String description, Long timestamp, String update_time, String cover_image, int media_type, String html_download) {
+        this.download_status = download_status;
+        this.progress = progress;
+        this.isInitStatus = isInitStatus;
+        this.id = id;
+        this.video_id = video_id;
+        this.audio_id = audio_id;
+        this.title = title;
+        this.description = description;
+        this.timestamp = timestamp;
+        this.update_time = update_time;
+        this.cover_image = cover_image;
+        this.media_type = media_type;
+        this.html_download = html_download;
+    }
+    @Generated(hash = 1579685679)
+    public News() {
+    }
+
+    @Generated(hash = 1490908319)
+    private transient Long audio__resolvedKey;
+    @Generated(hash = 1581726105)
+    private transient Long video__resolvedKey;
     /** -1 is download failed, 0 is not download, 1 is being download, 2 complete  */
     public int getDownload_status() {
         return download_status;
@@ -62,6 +110,22 @@ public class News {
 
     public float getProgress() {
         return progress;
+    }
+
+    public Long getVideo_id() {
+        return video_id;
+    }
+
+    public void setVideo_id(Long video_id) {
+        this.video_id = video_id;
+    }
+
+    public Long getAudio_id() {
+        return audio_id;
+    }
+
+    public void setAudio_id(Long audio_id) {
+        this.audio_id = audio_id;
     }
 
     public void setProgress(float progress) {
@@ -131,19 +195,19 @@ public class News {
     public void setHtml_download(String html_download) {
         this.html_download = html_download;
     }
-
+    @Keep
     public Audio getAudio() {
         return audio;
     }
-
+    @Keep
     public void setAudio(Audio audio) {
         this.audio = audio;
     }
-
+    @Keep
     public Video getVideo() {
         return video;
     }
-
+    @Keep
     public void setVideo(Video video) {
         this.video = video;
     }
@@ -213,6 +277,51 @@ public class News {
             }
         }
         return progress;
+    }
+    public boolean getIsInitStatus() {
+        return this.isInitStatus;
+    }
+    public void setIsInitStatus(boolean isInitStatus) {
+        this.isInitStatus = isInitStatus;
+    }
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
+    }
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
+    }
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
+    }
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 543991306)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getNewsDao() : null;
     }
 
 

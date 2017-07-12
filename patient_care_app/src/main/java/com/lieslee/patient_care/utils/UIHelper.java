@@ -15,13 +15,16 @@ import android.webkit.WebViewClient;
 
 import com.common.base.ui.BaseActivity;
 import com.lieslee.patient_care.R;
+import com.lieslee.patient_care.bean.Audio;
 import com.lieslee.patient_care.bean.News;
+import com.lieslee.patient_care.bean.Video;
 import com.lieslee.patient_care.module.common.ui.fragment.WebViewFragment;
 import com.views.ProgressWebView;
 import com.views.ProgressWheel;
 import com.views.util.ToastUtil;
 import com.views.util.ViewUtil;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -37,7 +40,7 @@ public class UIHelper {
         Animation shake = AnimationUtils.loadAnimation(context, R.anim.shake_x);
         view.startAnimation(shake);
         view.requestFocus();
-        if(!TextUtils.isEmpty(toast)){
+        if (!TextUtils.isEmpty(toast)) {
             ToastUtil.showShortToast(context, toast);
         }
 
@@ -64,7 +67,7 @@ public class UIHelper {
         return true;
     }
 
-    public static void initWebView(final BaseActivity baseActivity, final ProgressWebView webview, final ProgressWheel pw_loding, String url){
+    public static void initWebView(final BaseActivity baseActivity, final ProgressWebView webview, final ProgressWheel pw_loding, String url) {
 
         class WebChromeClient extends android.webkit.WebChromeClient {
             @Override
@@ -72,12 +75,12 @@ public class UIHelper {
                 if (newProgress == 100) {
                     webview.progressbar.setVisibility(View.GONE);
 
-                    if(pw_loding.getVisibility() == View.VISIBLE) {
+                    if (pw_loding.getVisibility() == View.VISIBLE) {
                         pw_loding.startAnimation(AnimationUtils.loadAnimation(baseActivity, R.anim.activity_close));
                         pw_loding.setVisibility(View.GONE);
                     }
                 } else {
-                    if (pw_loding.getVisibility() == View.GONE){
+                    if (pw_loding.getVisibility() == View.GONE) {
                         pw_loding.startAnimation(AnimationUtils.loadAnimation(baseActivity, R.anim.activity_open));
                         pw_loding.setVisibility(View.VISIBLE);
                     }
@@ -135,21 +138,46 @@ public class UIHelper {
 
     }
 
-    public static long getLastTimeOnList(List<News> list){
+    public static long getLastTimeOnList(List<News> list) {
         long time = 0;
-        for(News news : list){
-            if(news.getTimestamp() > time) time = news.getTimestamp();
+        for (News news : list) {
+            if (news.getTimestamp() > time) time = news.getTimestamp();
         }
         return time;
     }
 
-    public static void sortNews(List<News> list){
+    public static void sortNews(List<News> list) {
         Collections.sort(list, new Comparator<News>() {
             @Override
             public int compare(News o1, News o2) {  //Descending order
                 return o1.getTimestamp() < o2.getTimestamp() ? 1 : -1;
             }
         });
+    }
+
+    public static List<Audio> getAudios(List<News> data) {
+        List<Audio> list = new ArrayList<>();
+        if (data != null && data.size() > 0) {
+            for (News news : data) {
+                if (news != null && news.getAudio() != null) {
+                    list.add(news.getAudio());
+                }
+            }
+        }
+        return list;
+    }
+
+    public static List<Video> getVideos(List<News> data) {
+        List<Video> list = new ArrayList<>();
+        if (data != null && data.size() > 0) {
+            for (News news : data) {
+                if (news != null && news.getVideo() != null) {
+                    list.add(news.getVideo());
+                }
+            }
+        }
+
+        return list;
     }
 
 }

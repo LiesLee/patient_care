@@ -2,11 +2,17 @@ package com.lieslee.patient_care.module.download_history.presenter;
 
 import com.common.base.presenter.BasePresenterImpl;
 import com.common.callback.RequestCallback;
+import com.lieslee.patient_care.bean.Audio;
 import com.lieslee.patient_care.bean.NewsListResponse;
 import com.lieslee.patient_care.common.Constant;
+import com.lieslee.patient_care.dao.GreenDaoManager;
+import com.lieslee.patient_care.dao.gen.NewsDao;
 import com.lieslee.patient_care.http.HttpUtil;
 import com.lieslee.patient_care.http.protocol.CommonProtocol;
 import com.lieslee.patient_care.module.download_history.view.NewsListView;
+import com.lieslee.patient_care.utils.UIHelper;
+
+import java.util.List;
 
 /**
  * Created by LiesLee on 17/6/30.
@@ -47,6 +53,9 @@ public class NewsListPresenter extends BasePresenterImpl<NewsListView> {
 
             @Override
             public void requestSuccess(NewsListResponse data) {
+                GreenDaoManager.getInstance().getNewSession().getNewsDao().insertOrReplaceInTx(data.getLists());
+                GreenDaoManager.getInstance().getNewSession().getAudioDao().insertOrReplaceInTx(UIHelper.getAudios(data.getLists()));
+                GreenDaoManager.getInstance().getNewSession().getVideoDao().insertOrReplaceInTx(UIHelper.getVideos(data.getLists()));
                 mView.loadNewsListSuccessed(data);
             }
         });

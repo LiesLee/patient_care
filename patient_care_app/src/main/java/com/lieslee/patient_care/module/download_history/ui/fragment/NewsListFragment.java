@@ -15,6 +15,8 @@ import com.lai.library.ButtonStyle;
 import com.lieslee.patient_care.R;
 import com.lieslee.patient_care.bean.News;
 import com.lieslee.patient_care.bean.NewsListResponse;
+import com.lieslee.patient_care.dao.GreenDaoManager;
+import com.lieslee.patient_care.dao.gen.NewsDao;
 import com.lieslee.patient_care.event.ME_StartDownLoad;
 import com.lieslee.patient_care.module.download_history.presenter.NewsListPresenter;
 import com.lieslee.patient_care.module.download_history.ui.adapter.NewsAdapter;
@@ -68,8 +70,8 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
         findViewById(R.id.tv_title).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //发送消息通知观察者
-                EventBus.getDefault().post(new ME_StartDownLoad(0));
+                KLog.json(FastJsonUtil.t2Json2(GreenDaoManager.getInstance().getNewSession().getNewsDao().queryBuilder().orderDesc(NewsDao.Properties.Timestamp).list()));
+
             }
         });
     }
