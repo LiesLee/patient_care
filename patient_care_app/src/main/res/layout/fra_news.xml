@@ -42,8 +42,6 @@
             android:orientation="vertical"
             android:gravity="center"
             android:paddingBottom="13dp"
-            android:paddingLeft="120dp"
-            android:paddingRight="120dp"
             android:paddingTop="13dp">
 
             <com.lai.library.ButtonStyle

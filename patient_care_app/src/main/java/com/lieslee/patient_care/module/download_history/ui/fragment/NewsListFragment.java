@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.common.annotation.ActivityFragmentInject;
 import com.common.base.ui.BaseFragment;
 import com.common.utils.FastJsonUtil;
@@ -21,6 +22,7 @@ import com.lieslee.patient_care.event.ME_StartDownLoad;
 import com.lieslee.patient_care.module.download_history.presenter.NewsListPresenter;
 import com.lieslee.patient_care.module.download_history.ui.adapter.NewsAdapter;
 import com.lieslee.patient_care.module.download_history.view.NewsListView;
+import com.lieslee.patient_care.utils.DialogHelper;
 import com.lieslee.patient_care.utils.UIHelper;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
@@ -55,6 +57,7 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
     NewsAdapter mAdapter;
     LinearLayoutManager mLinearLayoutManager;
     int page = 1;
+    int offset = 0;
 
     @Override
     protected void initView(View fragmentRootView) {
@@ -70,7 +73,6 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
         findViewById(R.id.tv_title).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                KLog.json(FastJsonUtil.t2Json2(GreenDaoManager.getInstance().getNewSession().getNewsDao().queryBuilder().orderDesc(NewsDao.Properties.Timestamp).list()));
 
             }
         });
@@ -78,23 +80,28 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
 
     @Override
     public void initData() {
-        page =1;
-        mPresenter.loadNewsList(0);
+        page = 1;
+        offset = 0;
+        mPresenter.getNewsFromDB(offset, true);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bts_pull :
-                if(mAdapter.getData()!=null && mAdapter.getData().size() > 0){
+                if(page == 1){
+                    if(mAdapter!=null && mAdapter.getData()!=null && mAdapter.getData().size() > 0){
+                        long theLastTime = UIHelper.getLastTimeOnList(mAdapter.getData());
+                        mPresenter.loadNewsList(theLastTime);
+                    }else{
+                        mPresenter.loadNewsList(0);
+                    }
+
+                }else{
                     ++page;
                     long theLastTime = UIHelper.getLastTimeOnList(mAdapter.getData());
                     mPresenter.loadNewsList(theLastTime);
-                }else{
-                    mPresenter.loadNewsList(0);
                 }
-
-
                 break;
 
             default:
@@ -104,8 +111,10 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
 
     @Override
     public void loadNewsListSuccessed(NewsListResponse data) {
-        if(data!=null && data.getLists().size() > 0){
 
+        DialogHelper.showTipsDialog(baseActivity, "暂时没有更多资讯哦 ~ ", "好的", null);
+
+        if(data!=null && data.getLists().size() > 0){
             ll_pull.setVisibility(View.GONE);
         }else{
             ll_pull.setVisibility(View.VISIBLE);
@@ -114,8 +123,16 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
         if(page == 1){
             if(data!=null && data.getLists().size() > 0){
                 UIHelper.sortNews(data.getLists()); //sortting
+                if(mAdapter.getData()!=null && mAdapter.getData().size() > 0){
+                    data.getLists().addAll(mAdapter.getData());
+                    mAdapter.getData().clear();
+                    mAdapter.setData(data.getLists());
+                    rv_list.smoothScrollToPosition(mAdapter.getFinalPositionOnAdapter(0));
+                }else{
+                    mAdapter.setData(data.getLists());
+                }
             }
-            mAdapter.setData(data.getLists());
+
         }else{
             if(data!=null && data.getLists().size() > 0){
                 data.getLists().addAll(mAdapter.getData());
@@ -123,8 +140,6 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
                 mAdapter.getData().clear();
                 mAdapter.addNewData(data.getLists());
                 rv_list.smoothScrollToPosition(mAdapter.getFinalPositionOnAdapter(0));
-
-                KLog.json(FastJsonUtil.t2Json2(mAdapter.getData()));
             }else{
                 --page;
                 if(page < 1) page = 1;
@@ -136,60 +151,64 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
 
     }
 
+    @Override
+    public void getNewsFromDBSuccessed(List<News> data) {
+        if(offset == 0){
+            mAdapter.setData(data);
+            if(mAdapter.getData()!=null && mAdapter.getData().size() > 4){
+                mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+                    @Override
+                    public void onLoadMoreRequested() {
+                        ++offset;
+                        mPresenter.getNewsFromDB(offset, false);
+                    }
+                });
+            }
+        }else{
+            if(data==null || data.size() == 0){
+                --offset;
+                if(offset < 0) offset = 0;
+            }
+            mAdapter.addNewData(data);
+        }
+        //发送消息通知观察者
+        EventBus.getDefault().post(new ME_StartDownLoad(0));
+
+    }
+
     public void startDownload(){
         News news = mAdapter.getNewsById(mAdapter.downloading_id);
-
         FileDownloadListener queueTarget = new FileDownloadListener() {
-
             long time = 0L;
-
             @Override
-            protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-            }
-
+            protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {}
             @Override
-            protected void connected(BaseDownloadTask task, String etag, boolean isContinue, int soFarBytes, int totalBytes) {
-            }
-
+            protected void connected(BaseDownloadTask task, String etag, boolean isContinue, int soFarBytes, int totalBytes) {}
             @Override
             protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-
                 long now = System.currentTimeMillis();
                 if(now - time > 500){
                     time = now;
                     if(mAdapter!=null) mAdapter.updateProgress(task, soFarBytes, totalBytes);
                 }
-
-
             }
-
             @Override
-            protected void blockComplete(BaseDownloadTask task) {
-
-            }
-
+            protected void blockComplete(BaseDownloadTask task) {}
             @Override
-            protected void retry(final BaseDownloadTask task, final Throwable ex, final int retryingTimes, final int soFarBytes) {
-            }
-
+            protected void retry(final BaseDownloadTask task, final Throwable ex, final int retryingTimes, final int soFarBytes) {}
             @Override
             protected void completed(BaseDownloadTask task) {
                 if(mAdapter!=null) mAdapter.upDateItem(task, 0);
             }
-
             @Override
-            protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-            }
-
+            protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {}
             @Override
             protected void error(BaseDownloadTask task, Throwable e) {
                 KLog.e(e);
                 if(mAdapter!=null) mAdapter.upDateItem(task, 1);
             }
-
             @Override
-            protected void warn(BaseDownloadTask task) {
-            }
+            protected void warn(BaseDownloadTask task) {}
         };
 
         FileDownloadQueueSet queueSet = new FileDownloadQueueSet(queueTarget);
@@ -205,14 +224,12 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
                     .setTag(news.getId())
                     .setPath(news.getHtmlPath(baseActivity)));
         }
-
         if(!TextUtils.isEmpty(news.getCoverImagePath(baseActivity))){
             tasks.add(FileDownloader.getImpl()
                     .create(news.getCover_image())
                     .setTag(news.getId())
                     .setPath(news.getCoverImagePath(baseActivity)));
         }
-
         if(!TextUtils.isEmpty(news.getAudioPath(baseActivity))){
             tasks.add(FileDownloader.getImpl()
                     .create(news.getAudio().getUrl())
@@ -225,7 +242,6 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
                     .setTag(news.getId())
                     .setPath(news.getVideoPath(baseActivity)));
         }
-
         if(tasks.size() > 0){ //有下载任务
             //并行下载
             //queueSet.downloadTogether(tasks);
