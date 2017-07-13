@@ -1,6 +1,7 @@
 package com.lieslee.patient_care.module.download_history.ui.adapter;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
@@ -9,20 +10,28 @@ import android.widget.ImageView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.common.base.ui.BaseActivity;
 import com.common.base.ui.BaseAdapter;
 import com.common.utils.FastJsonUtil;
 import com.lieslee.patient_care.R;
 import com.lieslee.patient_care.bean.FileDownLoadStatus;
 import com.lieslee.patient_care.bean.News;
+import com.lieslee.patient_care.event.ME_NewsDelete;
+import com.lieslee.patient_care.event.ME_NewsSave;
+import com.lieslee.patient_care.event.ME_RedownloadNews;
 import com.lieslee.patient_care.event.ME_StartDownLoad;
 import com.lieslee.patient_care.module.download_history.ui.activity.NewsDetailActivity;
+import com.lieslee.patient_care.utils.DialogHelper;
 import com.lieslee.patient_care.utils.GlideUtil;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.socks.library.KLog;
+import com.views.util.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -31,7 +40,6 @@ import java.util.List;
 
 public class NewsAdapter extends BaseAdapter<News> {
 
-    public volatile int downPosition = -1;
     public volatile Long downloading_id = -1l;
 
     public NewsAdapter(Context ctx, int layoutResId, List<News> data) {
@@ -97,9 +105,23 @@ public class NewsAdapter extends BaseAdapter<News> {
         baseViewHolder.getConvertView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, NewsDetailActivity.class);
-                intent.putExtra("id", data.getId());
-                mContext.startActivity(intent);
+                if(data.getDownload_status() == 2){ //
+                    Intent intent = new Intent(mContext, NewsDetailActivity.class);
+                    intent.putExtra("id", data.getId());
+                    mContext.startActivity(intent);
+                }else if(data.getDownload_status() == -1){
+                    popExcuteDialog(data);
+                }else{
+                    DialogHelper.showTipsDialog((BaseActivity) mContext, "下载成功以后才能查看哦 ~", "好的", null);
+                }
+            }
+        });
+
+        baseViewHolder.getConvertView().setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                popExcuteDialog(data);
+                return false;
             }
         });
     }
@@ -114,16 +136,6 @@ public class NewsAdapter extends BaseAdapter<News> {
         News news = getNewsById(id);
         if (news != null) {
             if(state == 0){
-                news.setProgress(news.getProgress() + 1f);
-                KLog.e("===Progress==="+news.getProgress());
-                if(news.getProgress() == news.getFileDownLoadStatus().size()){
-                    news.setDownload_status(2);
-                    KLog.e("news下载完成");
-                    KLog.json(FastJsonUtil.t2Json2(news));
-                    //发送消息通知观察者
-                    EventBus.getDefault().post(new ME_StartDownLoad(0));
-                }
-
                 for (FileDownLoadStatus status : news.getFileDownLoadStatus()) {
                     if (task.getUrl().equals(status.getUrl())) {
                         status.setProgress(100f);
@@ -132,14 +144,23 @@ public class NewsAdapter extends BaseAdapter<News> {
                     }
 
                 }
+                news.setProgress(news.getProgress() + 1f);
+                KLog.e("===Progress==="+news.getProgress());
+                if(news.getProgress() == news.getFileDownLoadStatus().size()){
+                    news.setDownload_status(2);
+                    KLog.e("news下载完成");
+                    //发送消息通知观察者
+                    EventBus.getDefault().post(new ME_StartDownLoad(0));
+                    EventBus.getDefault().post(new ME_NewsSave(news));
+                }
 
             }else if (state == 1){
                 news.setDownload_status(-1);
                 news.setProgress(0);
                 KLog.e("news下载失败");
-                KLog.json(FastJsonUtil.t2Json2(news));
                 //发送消息通知观察者
                 EventBus.getDefault().post(new ME_StartDownLoad(0));
+                EventBus.getDefault().post(new ME_NewsSave(news));
             }
 
         }
@@ -177,24 +198,75 @@ public class NewsAdapter extends BaseAdapter<News> {
 
     public boolean findDownloadItem() {
         boolean hasDownload = false;
-        for (int i = 0; i < mData.size(); i++) {
-            News news = mData.get(i);
-            if (news.getDownload_status() == 0) {
-                downPosition = i;
+        Iterator<News> it = getData().iterator();
+        while (it.hasNext()){
+            News news = it.next();
+            if(news.getDownload_status() == 0){
                 downloading_id = news.getId();
                 hasDownload = true;
-                break;
             }
         }
         return hasDownload;
     }
 
     public News getNewsById(Long id){
-        for (News n : getData()){
-            if(n.getId().equals(id)){
-                return  n;
+        Iterator<News> it = getData().iterator();
+        while (it.hasNext()){
+            News news = it.next();
+            if(news.getId().equals(id)){
+                return news;
             }
         }
         return null;
+    }
+
+
+
+    public void popExcuteDialog(final News news){
+        final int state = news.getDownload_status();
+        if(state == 0 || state == 1) return;
+        List<String> list;
+        if(state == -1){
+            list = Arrays.asList("重新下载", "删除");
+        }else{
+            list = Arrays.asList("删除");
+        }
+        DialogHelper.DialogOnclickSelectCallback callback = new DialogHelper.DialogOnclickSelectCallback() {
+            @Override
+            public void onButtonClick(Dialog dialog, int position) {
+                if(state == -1){
+                    switch (position) {
+                        case 0 :
+                            EventBus.getDefault().post(new ME_RedownloadNews(news));
+                            break;
+                        case 1 :
+                            delete(news);
+                            break;
+
+                        default:
+                            break;
+                    }
+                }else{
+                    delete(news);
+                }
+            }
+        };
+
+
+        DialogHelper.showExcuteDialog((BaseActivity) mContext, list, callback);
+
+    }
+
+    private void delete(News news){
+        EventBus.getDefault().post(new ME_NewsDelete(news));
+        Iterator<News> it = getData().iterator();
+        while (it.hasNext()){
+            if(it.next().getId().equals(news.getId())){
+                it.remove();
+                break;
+            }
+        }
+        ToastUtil.showShortToast(mContext, "删除成功");
+        notifyDataSetChanged();
     }
 }

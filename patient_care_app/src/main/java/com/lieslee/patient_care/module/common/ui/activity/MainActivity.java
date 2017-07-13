@@ -1,9 +1,11 @@
 package com.lieslee.patient_care.module.common.ui.activity;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.common.ShiHuiActivityManager;
 import com.common.annotation.ActivityFragmentInject;
 import com.common.base.ui.BaseActivity;
 import com.common.base.ui.BaseFragment;
@@ -32,6 +34,7 @@ public class MainActivity extends BaseActivity {
     WebViewFragment webViewFragment;
     List<BaseFragment> fragments;
     private MainFragmentAdapter fragmentAdapter;
+    private long exitTime;
 
 
     @Override
@@ -75,4 +78,22 @@ public class MainActivity extends BaseActivity {
                 break;
         }
     }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                && event.getAction() == KeyEvent.ACTION_DOWN) {
+
+            if ((System.currentTimeMillis() - exitTime) > 2000) {
+                toast("再按一次退出应用");
+                exitTime = System.currentTimeMillis();
+            } else {
+                ShiHuiActivityManager.getInstance().cleanActivity();
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
 }

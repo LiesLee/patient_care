@@ -32,17 +32,16 @@ public class NewsDao extends AbstractDao<News, Long> {
     public static class Properties {
         public final static Property Download_status = new Property(0, int.class, "download_status", false, "DOWNLOAD_STATUS");
         public final static Property Progress = new Property(1, float.class, "progress", false, "PROGRESS");
-        public final static Property IsInitStatus = new Property(2, boolean.class, "isInitStatus", false, "IS_INIT_STATUS");
-        public final static Property Id = new Property(3, Long.class, "id", true, "_id");
-        public final static Property Video_id = new Property(4, Long.class, "video_id", false, "VIDEO_ID");
-        public final static Property Audio_id = new Property(5, Long.class, "audio_id", false, "AUDIO_ID");
-        public final static Property Title = new Property(6, String.class, "title", false, "TITLE");
-        public final static Property Description = new Property(7, String.class, "description", false, "DESCRIPTION");
-        public final static Property Timestamp = new Property(8, Long.class, "timestamp", false, "TIMESTAMP");
-        public final static Property Update_time = new Property(9, String.class, "update_time", false, "UPDATE_TIME");
-        public final static Property Cover_image = new Property(10, String.class, "cover_image", false, "COVER_IMAGE");
-        public final static Property Media_type = new Property(11, int.class, "media_type", false, "MEDIA_TYPE");
-        public final static Property Html_download = new Property(12, String.class, "html_download", false, "HTML_DOWNLOAD");
+        public final static Property Id = new Property(2, Long.class, "id", true, "_id");
+        public final static Property Video_id = new Property(3, Long.class, "video_id", false, "VIDEO_ID");
+        public final static Property Audio_id = new Property(4, Long.class, "audio_id", false, "AUDIO_ID");
+        public final static Property Title = new Property(5, String.class, "title", false, "TITLE");
+        public final static Property Description = new Property(6, String.class, "description", false, "DESCRIPTION");
+        public final static Property Timestamp = new Property(7, Long.class, "timestamp", false, "TIMESTAMP");
+        public final static Property Update_time = new Property(8, String.class, "update_time", false, "UPDATE_TIME");
+        public final static Property Cover_image = new Property(9, String.class, "cover_image", false, "COVER_IMAGE");
+        public final static Property Media_type = new Property(10, int.class, "media_type", false, "MEDIA_TYPE");
+        public final static Property Html_download = new Property(11, String.class, "html_download", false, "HTML_DOWNLOAD");
     }
 
     private DaoSession daoSession;
@@ -63,17 +62,16 @@ public class NewsDao extends AbstractDao<News, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"NEWS\" (" + //
                 "\"DOWNLOAD_STATUS\" INTEGER NOT NULL ," + // 0: download_status
                 "\"PROGRESS\" REAL NOT NULL ," + // 1: progress
-                "\"IS_INIT_STATUS\" INTEGER NOT NULL ," + // 2: isInitStatus
-                "\"_id\" INTEGER PRIMARY KEY ," + // 3: id
-                "\"VIDEO_ID\" INTEGER," + // 4: video_id
-                "\"AUDIO_ID\" INTEGER," + // 5: audio_id
-                "\"TITLE\" TEXT," + // 6: title
-                "\"DESCRIPTION\" TEXT," + // 7: description
-                "\"TIMESTAMP\" INTEGER," + // 8: timestamp
-                "\"UPDATE_TIME\" TEXT," + // 9: update_time
-                "\"COVER_IMAGE\" TEXT," + // 10: cover_image
-                "\"MEDIA_TYPE\" INTEGER NOT NULL ," + // 11: media_type
-                "\"HTML_DOWNLOAD\" TEXT);"); // 12: html_download
+                "\"_id\" INTEGER PRIMARY KEY ," + // 2: id
+                "\"VIDEO_ID\" INTEGER," + // 3: video_id
+                "\"AUDIO_ID\" INTEGER," + // 4: audio_id
+                "\"TITLE\" TEXT," + // 5: title
+                "\"DESCRIPTION\" TEXT," + // 6: description
+                "\"TIMESTAMP\" INTEGER," + // 7: timestamp
+                "\"UPDATE_TIME\" TEXT," + // 8: update_time
+                "\"COVER_IMAGE\" TEXT," + // 9: cover_image
+                "\"MEDIA_TYPE\" INTEGER NOT NULL ," + // 10: media_type
+                "\"HTML_DOWNLOAD\" TEXT);"); // 11: html_download
     }
 
     /** Drops the underlying database table. */
@@ -87,52 +85,51 @@ public class NewsDao extends AbstractDao<News, Long> {
         stmt.clearBindings();
         stmt.bindLong(1, entity.getDownload_status());
         stmt.bindDouble(2, entity.getProgress());
-        stmt.bindLong(3, entity.getIsInitStatus() ? 1L: 0L);
  
         Long id = entity.getId();
         if (id != null) {
-            stmt.bindLong(4, id);
+            stmt.bindLong(3, id);
         }
  
         Long video_id = entity.getVideo_id();
         if (video_id != null) {
-            stmt.bindLong(5, video_id);
+            stmt.bindLong(4, video_id);
         }
  
         Long audio_id = entity.getAudio_id();
         if (audio_id != null) {
-            stmt.bindLong(6, audio_id);
+            stmt.bindLong(5, audio_id);
         }
  
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(7, title);
+            stmt.bindString(6, title);
         }
  
         String description = entity.getDescription();
         if (description != null) {
-            stmt.bindString(8, description);
+            stmt.bindString(7, description);
         }
  
         Long timestamp = entity.getTimestamp();
         if (timestamp != null) {
-            stmt.bindLong(9, timestamp);
+            stmt.bindLong(8, timestamp);
         }
  
         String update_time = entity.getUpdate_time();
         if (update_time != null) {
-            stmt.bindString(10, update_time);
+            stmt.bindString(9, update_time);
         }
  
         String cover_image = entity.getCover_image();
         if (cover_image != null) {
-            stmt.bindString(11, cover_image);
+            stmt.bindString(10, cover_image);
         }
-        stmt.bindLong(12, entity.getMedia_type());
+        stmt.bindLong(11, entity.getMedia_type());
  
         String html_download = entity.getHtml_download();
         if (html_download != null) {
-            stmt.bindString(13, html_download);
+            stmt.bindString(12, html_download);
         }
     }
 
@@ -141,52 +138,51 @@ public class NewsDao extends AbstractDao<News, Long> {
         stmt.clearBindings();
         stmt.bindLong(1, entity.getDownload_status());
         stmt.bindDouble(2, entity.getProgress());
-        stmt.bindLong(3, entity.getIsInitStatus() ? 1L: 0L);
  
         Long id = entity.getId();
         if (id != null) {
-            stmt.bindLong(4, id);
+            stmt.bindLong(3, id);
         }
  
         Long video_id = entity.getVideo_id();
         if (video_id != null) {
-            stmt.bindLong(5, video_id);
+            stmt.bindLong(4, video_id);
         }
  
         Long audio_id = entity.getAudio_id();
         if (audio_id != null) {
-            stmt.bindLong(6, audio_id);
+            stmt.bindLong(5, audio_id);
         }
  
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(7, title);
+            stmt.bindString(6, title);
         }
  
         String description = entity.getDescription();
         if (description != null) {
-            stmt.bindString(8, description);
+            stmt.bindString(7, description);
         }
  
         Long timestamp = entity.getTimestamp();
         if (timestamp != null) {
-            stmt.bindLong(9, timestamp);
+            stmt.bindLong(8, timestamp);
         }
  
         String update_time = entity.getUpdate_time();
         if (update_time != null) {
-            stmt.bindString(10, update_time);
+            stmt.bindString(9, update_time);
         }
  
         String cover_image = entity.getCover_image();
         if (cover_image != null) {
-            stmt.bindString(11, cover_image);
+            stmt.bindString(10, cover_image);
         }
-        stmt.bindLong(12, entity.getMedia_type());
+        stmt.bindLong(11, entity.getMedia_type());
  
         String html_download = entity.getHtml_download();
         if (html_download != null) {
-            stmt.bindString(13, html_download);
+            stmt.bindString(12, html_download);
         }
     }
 
@@ -198,7 +194,7 @@ public class NewsDao extends AbstractDao<News, Long> {
 
     @Override
     public Long readKey(Cursor cursor, int offset) {
-        return cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3);
+        return cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2);
     }    
 
     @Override
@@ -206,17 +202,16 @@ public class NewsDao extends AbstractDao<News, Long> {
         News entity = new News( //
             cursor.getInt(offset + 0), // download_status
             cursor.getFloat(offset + 1), // progress
-            cursor.getShort(offset + 2) != 0, // isInitStatus
-            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // id
-            cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // video_id
-            cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5), // audio_id
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // title
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // description
-            cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8), // timestamp
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // update_time
-            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // cover_image
-            cursor.getInt(offset + 11), // media_type
-            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12) // html_download
+            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // id
+            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // video_id
+            cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // audio_id
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // title
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // description
+            cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7), // timestamp
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // update_time
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // cover_image
+            cursor.getInt(offset + 10), // media_type
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11) // html_download
         );
         return entity;
     }
@@ -225,17 +220,16 @@ public class NewsDao extends AbstractDao<News, Long> {
     public void readEntity(Cursor cursor, News entity, int offset) {
         entity.setDownload_status(cursor.getInt(offset + 0));
         entity.setProgress(cursor.getFloat(offset + 1));
-        entity.setIsInitStatus(cursor.getShort(offset + 2) != 0);
-        entity.setId(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
-        entity.setVideo_id(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
-        entity.setAudio_id(cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5));
-        entity.setTitle(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setDescription(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setTimestamp(cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8));
-        entity.setUpdate_time(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setCover_image(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
-        entity.setMedia_type(cursor.getInt(offset + 11));
-        entity.setHtml_download(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setId(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
+        entity.setVideo_id(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
+        entity.setAudio_id(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
+        entity.setTitle(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setDescription(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setTimestamp(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
+        entity.setUpdate_time(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setCover_image(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setMedia_type(cursor.getInt(offset + 10));
+        entity.setHtml_download(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
      }
     
     @Override

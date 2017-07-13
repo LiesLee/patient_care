@@ -1,17 +1,21 @@
 package com.lieslee.patient_care.utils;
 
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.common.base.ui.BaseActivity;
 import com.lieslee.patient_care.R;
@@ -178,6 +182,37 @@ public class UIHelper {
         }
 
         return list;
+    }
+
+
+    /**
+     * @param baseActivity
+     * @param rootView
+     * @param list
+     * @param callback
+     */
+    public static void showItemDefaultInfolist(BaseActivity baseActivity, LinearLayout rootView, List<String> list, final Dialog dialog, final DialogHelper.DialogOnclickSelectCallback callback){
+        rootView.removeAllViews();
+        if (list != null && list.size() > 0) {
+            for(int i = 0; i<list.size();i++){
+                //一整行的图片布局
+                View viewItem = LayoutInflater.from(baseActivity).inflate(R.layout.item_default_info_list, null);
+                TextView tv_1 = (TextView) viewItem.findViewById(R.id.tv_1);
+                tv_1.setText(list.get(i));
+                viewItem.setTag(i);
+                viewItem.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int index = (int) v.getTag();
+                        callback.onButtonClick(dialog, index);
+                        dialog.dismiss();
+                    }
+                });
+
+                rootView.addView(viewItem);
+            }
+
+        }
     }
 
 }

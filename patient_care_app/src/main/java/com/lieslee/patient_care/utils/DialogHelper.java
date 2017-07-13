@@ -14,6 +14,8 @@ import com.views.wheel.adapters.ArrayWheelAdapter;
 import com.views.wheel.widget.OnWheelChangedListener;
 import com.views.wheel.widget.WheelView;
 
+import java.util.List;
+
 /**
  * Created by LiesLee on 16/10/31.
  */
@@ -123,6 +125,32 @@ public class DialogHelper {
         p.width = (int) (d.getWidth() * 0.80);
         dialogWindow.setAttributes(p);
 
+        if (!dialog.isShowing()) {
+            dialog.show();
+        }
+        return dialog;
+    }
+
+    /**
+     * 提示小弹窗
+     *
+     * @param context
+     * @param callback
+     * @return
+     */
+    public static Dialog showExcuteDialog(BaseActivity context, List<String> list, final DialogOnclickSelectCallback callback) {
+
+        final Dialog dialog = new Dialog(context, R.style.custom_dialog);
+        dialog.setContentView(R.layout.dialog_excute);
+        LinearLayout ll_root = (LinearLayout) dialog.findViewById(R.id.ll_root);
+        UIHelper.showItemDefaultInfolist(context, ll_root, list, dialog, callback);
+        Window dialogWindow = dialog.getWindow();
+        WindowManager m = context.getWindowManager();
+        Display d = m.getDefaultDisplay();
+        WindowManager.LayoutParams p = dialogWindow.getAttributes();
+        //p.height = (int) (d.getHeight()*0.6);
+        p.width = (int) (d.getWidth() * 0.6);
+        dialogWindow.setAttributes(p);
         if (!dialog.isShowing()) {
             dialog.show();
         }

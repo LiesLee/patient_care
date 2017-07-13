@@ -13,4 +13,5 @@ import java.util.List;
 public interface NewsListView extends BaseView {
     void loadNewsListSuccessed(NewsListResponse data);
     void getNewsFromDBSuccessed(List<News> data);
+    void getNotDownloadNews(List<News> data);
 }

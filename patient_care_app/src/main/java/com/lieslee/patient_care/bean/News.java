@@ -48,6 +48,7 @@ public class News {
     private float progress = 0.0f;
     @Transient
     private List<FileDownLoadStatus> statuses;
+    @Transient
     private boolean isInitStatus = false;
     @ToOne(joinProperty = "audio_id")
     private Audio audio;
@@ -74,12 +75,11 @@ public class News {
     /** Used for active entity operations. */
     @Generated(hash = 255022283)
     private transient NewsDao myDao;
-    @Generated(hash = 1990584413)
-    public News(int download_status, float progress, boolean isInitStatus, Long id, Long video_id, Long audio_id, String title,
-            String description, Long timestamp, String update_time, String cover_image, int media_type, String html_download) {
+    @Generated(hash = 330701068)
+    public News(int download_status, float progress, Long id, Long video_id, Long audio_id, String title, String description,
+            Long timestamp, String update_time, String cover_image, int media_type, String html_download) {
         this.download_status = download_status;
         this.progress = progress;
-        this.isInitStatus = isInitStatus;
         this.id = id;
         this.video_id = video_id;
         this.audio_id = audio_id;

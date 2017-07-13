@@ -18,6 +18,9 @@ import com.lieslee.patient_care.bean.News;
 import com.lieslee.patient_care.bean.NewsListResponse;
 import com.lieslee.patient_care.dao.GreenDaoManager;
 import com.lieslee.patient_care.dao.gen.NewsDao;
+import com.lieslee.patient_care.event.ME_NewsDelete;
+import com.lieslee.patient_care.event.ME_NewsSave;
+import com.lieslee.patient_care.event.ME_RedownloadNews;
 import com.lieslee.patient_care.event.ME_StartDownLoad;
 import com.lieslee.patient_care.module.download_history.presenter.NewsListPresenter;
 import com.lieslee.patient_care.module.download_history.ui.adapter.NewsAdapter;
@@ -82,7 +85,7 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
     public void initData() {
         page = 1;
         offset = 0;
-        mPresenter.getNewsFromDB(offset, true);
+        mPresenter.getNotDownloadNews(); //check has not download news
     }
 
     @Override
@@ -110,13 +113,22 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
     }
 
     @Override
+    public void getNotDownloadNews(List<News> data) {
+        if(data != null && data.size() > 0){ //has not download news
+            ll_pull.setVisibility(View.GONE);
+            mPresenter.getAllNewsFromDB();
+        }else{
+            mPresenter.getNewsFromDB(offset, true);
+            ll_pull.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
     public void loadNewsListSuccessed(NewsListResponse data) {
-
-        DialogHelper.showTipsDialog(baseActivity, "暂时没有更多资讯哦 ~ ", "好的", null);
-
         if(data!=null && data.getLists().size() > 0){
             ll_pull.setVisibility(View.GONE);
         }else{
+            DialogHelper.showTipsDialog(baseActivity, "暂时没有更多资讯哦 ~ ", "好的", null);
             ll_pull.setVisibility(View.VISIBLE);
         }
 
@@ -146,13 +158,13 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
             }
         }
 
-        //发送消息通知观察者
+        //post notice to download
         EventBus.getDefault().post(new ME_StartDownLoad(0));
 
     }
 
     @Override
-    public void getNewsFromDBSuccessed(List<News> data) {
+    public void getNewsFromDBSuccessed(final List<News> data) {
         if(offset == 0){
             mAdapter.setData(data);
             if(mAdapter.getData()!=null && mAdapter.getData().size() > 4){
@@ -169,12 +181,20 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
                 --offset;
                 if(offset < 0) offset = 0;
             }
-            mAdapter.addNewData(data);
+            rv_list.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mAdapter.addNewData(data);
+                }
+            }, 1500);
+
         }
-        //发送消息通知观察者
+        //post notice to download
         EventBus.getDefault().post(new ME_StartDownLoad(0));
 
     }
+
+
 
     public void startDownload(){
         News news = mAdapter.getNewsById(mAdapter.downloading_id);
@@ -284,6 +304,26 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
                 ll_pull.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onMessageEvent(ME_NewsSave event) {
+        if(event.news != null && mPresenter != null){
+            mPresenter.updateNewsIsDownloaded(event.news);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onMessageEvent(ME_NewsDelete event) {
+        if(event.news != null && mPresenter != null){
+            mPresenter.deleteNews(event.news);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onMessageEvent(ME_RedownloadNews event) {
+        KLog.e("重新下载");
     }
 
 }
