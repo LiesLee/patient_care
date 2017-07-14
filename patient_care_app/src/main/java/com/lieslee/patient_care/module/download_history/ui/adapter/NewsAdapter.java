@@ -24,6 +24,7 @@ import com.lieslee.patient_care.module.download_history.ui.activity.NewsDetailAc
 import com.lieslee.patient_care.utils.DialogHelper;
 import com.lieslee.patient_care.utils.GlideUtil;
 import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.exception.FileDownloadHttpException;
 import com.socks.library.KLog;
 import com.views.util.ToastUtil;
 
@@ -41,6 +42,7 @@ import java.util.List;
 public class NewsAdapter extends BaseAdapter<News> {
 
     public volatile Long downloading_id = -1l;
+    public volatile Long redownloading_id = -1l;
 
     public NewsAdapter(Context ctx, int layoutResId, List<News> data) {
         super(ctx, layoutResId, data);
@@ -177,10 +179,11 @@ public class NewsAdapter extends BaseAdapter<News> {
     public void updateProgress(BaseDownloadTask task, int soFarBytes, int totalBytes){
         float progress= 0f;
         if(soFarBytes != 0){
+            Long id = (Long) task.getTag();
             BigDecimal so = new BigDecimal(soFarBytes * 100);
             BigDecimal total = new BigDecimal(totalBytes);
             progress= so.divide(total, 2, BigDecimal.ROUND_HALF_UP).floatValue();
-            News news = getNewsById(downloading_id);
+            News news = getNewsById(id);
             for (FileDownLoadStatus status : news.getFileDownLoadStatus()) {
                     if (task.getUrl().equals(status.getUrl())) {
                         if(progress >= status.getProgress()){
@@ -195,6 +198,54 @@ public class NewsAdapter extends BaseAdapter<News> {
         notifyDataSetChanged();
 
     }
+
+    /**
+     * 重新下载完成状态
+     * @param task
+     * @param state 0:completed one file、  1 error
+     */
+    public void redownloadUpDateItem(BaseDownloadTask task, int state, Throwable e){
+        Long id = (Long) task.getTag();
+        News news = getNewsById(id);
+        if (news != null) {
+            if(state == 0){
+                for (FileDownLoadStatus status : news.getFileDownLoadStatus()) {
+                    if (task.getUrl().equals(status.getUrl())) {
+                        status.setProgress(100f);
+                        status.setDone(true);
+                        break;
+                    }
+
+                }
+                news.setProgress(news.getProgress() + 1f);
+                KLog.e("===Progress==="+news.getProgress());
+                if(news.getProgress() == news.getFileDownLoadStatus().size()){
+                    news.setDownload_status(2);
+                    KLog.e("news重新下载完成");
+                    EventBus.getDefault().post(new ME_NewsSave(news));
+                }
+
+            }else if (state == 1){
+                news.setDownload_status(-1);
+                news.setProgress(0);
+                KLog.e("news重新下载失败");
+
+                String error = "";
+                if(e != null && e instanceof FileDownloadHttpException){
+                    error = ((FileDownloadHttpException)e).getCode() + error;
+                }
+                DialogHelper.showTipsDialog((BaseActivity) mContext, "重新下载失败\n \n《"+news.getTitle()
+                        +"》  文件不存在或链接出错，错误码：\n"+error+"\n\n可联系相关客服解决！", "好的", null);
+
+                //发送消息通知观察者
+                EventBus.getDefault().post(new ME_NewsSave(news));
+            }
+
+        }
+        notifyDataSetChanged();
+    }
+
+
 
     public boolean findDownloadItem() {
         boolean hasDownload = false;
@@ -251,8 +302,6 @@ public class NewsAdapter extends BaseAdapter<News> {
                 }
             }
         };
-
-
         DialogHelper.showExcuteDialog((BaseActivity) mContext, list, callback);
 
     }

@@ -321,9 +321,89 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(ME_RedownloadNews event) {
         KLog.e("重新下载");
+        News news = event.news;
+        FileDownloadListener queueTarget = new FileDownloadListener() {
+            long time = 0L;
+            @Override
+            protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {}
+            @Override
+            protected void connected(BaseDownloadTask task, String etag, boolean isContinue, int soFarBytes, int totalBytes) {}
+            @Override
+            protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                long now = System.currentTimeMillis();
+                if(now - time > 500){
+                    time = now;
+                    if(mAdapter!=null) mAdapter.updateProgress(task, soFarBytes, totalBytes);
+                }
+            }
+            @Override
+            protected void blockComplete(BaseDownloadTask task) {}
+            @Override
+            protected void retry(final BaseDownloadTask task, final Throwable ex, final int retryingTimes, final int soFarBytes) {}
+            @Override
+            protected void completed(BaseDownloadTask task) {
+                if(mAdapter!=null) mAdapter.redownloadUpDateItem(task, 0,null);
+            }
+            @Override
+            protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {}
+            @Override
+            protected void error(BaseDownloadTask task, Throwable e) {
+                KLog.e(e);
+                if(mAdapter!=null) mAdapter.redownloadUpDateItem(task, 1, e);
+            }
+            @Override
+            protected void warn(BaseDownloadTask task) {}
+        };
+
+        FileDownloadQueueSet queueSet = new FileDownloadQueueSet(queueTarget);
+        //队列任务设置不调用progress
+        //queueSet.disableCallbackProgressTimes();
+        // 所有任务在下载失败的时候都自动重试一次
+        queueSet.setAutoRetryTimes(1);
+        List<BaseDownloadTask> tasks = new ArrayList<>();
+
+        if(!TextUtils.isEmpty(news.getHtmlPath(baseActivity))){
+            tasks.add(FileDownloader.getImpl()
+                    .create(news.getHtml_download())
+                    .setTag(news.getId())
+                    .setPath(news.getHtmlPath(baseActivity)));
+        }
+        if(!TextUtils.isEmpty(news.getCoverImagePath(baseActivity))){
+            tasks.add(FileDownloader.getImpl()
+                    .create(news.getCover_image())
+                    .setTag(news.getId())
+                    .setPath(news.getCoverImagePath(baseActivity)));
+        }
+        if(!TextUtils.isEmpty(news.getAudioPath(baseActivity))){
+            tasks.add(FileDownloader.getImpl()
+                    .create(news.getAudio().getUrl())
+                    .setTag(news.getId())
+                    .setPath(news.getAudioPath(baseActivity)));
+        }
+        if(!TextUtils.isEmpty(news.getVideoPath(baseActivity))){
+            tasks.add(FileDownloader.getImpl()
+                    .create(news.getVideo().getUrl())
+                    .setTag(news.getId())
+                    .setPath(news.getVideoPath(baseActivity)));
+        }
+        if(tasks.size() > 0){ //有下载任务
+            //并行下载
+            //queueSet.downloadTogether(tasks);
+            //串行下载（一个一个来）
+            queueSet.downloadSequentially(tasks);
+            news.setDownload_status(1);
+            mAdapter.notifyDataSetChanged();
+            queueSet.start();
+        }else{ //无下载任务
+            news.setDownload_status(2);
+            mAdapter.notifyDataSetChanged();
+        }
+
+
+
     }
 
 }
