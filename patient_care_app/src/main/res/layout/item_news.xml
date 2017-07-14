@@ -9,10 +9,10 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="7.5dp"
         android:layout_marginBottom="7.5dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
+        android:layout_marginTop="7.5dp"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="7dp">
 
@@ -25,10 +25,10 @@
 
             <RelativeLayout
                 android:id="@+id/rl_media"
-                android:visibility="visible"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginRight="10dp"
+                android:visibility="visible">
 
                 <ImageView
                     android:id="@+id/iv_item_img"
@@ -80,28 +80,28 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:maxLines="2"
                     android:ellipsize="end"
-                    android:visibility="visible"
+                    android:maxLines="2"
                     android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus"
-                    android:textSize="14dp" />
+                    android:textSize="14dp"
+                    android:visibility="visible" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_marginTop="5dp"
                     android:layout_gravity="bottom"
-                    android:gravity="bottom"
+                    android:layout_marginTop="5dp"
                     android:layout_weight="1"
+                    android:gravity="bottom"
                     android:orientation="horizontal">
 
                     <LinearLayout
                         android:id="@+id/ll_progress_layout"
                         android:layout_width="0dp"
-                        android:orientation="horizontal"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:orientation="horizontal">
 
                         <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
                             android:id="@+id/rvpb_bar"
@@ -118,13 +118,13 @@
                         <TextView
                             android:id="@+id/tv_percent"
                             android:layout_width="wrap_content"
-                            android:gravity="center"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:minWidth="50dp"
-                            android:ellipsize="end"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
+                            android:ellipsize="end"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:minWidth="50dp"
+                            android:singleLine="true"
                             android:text="99.99%"
                             android:textSize="13dp" />
                     </LinearLayout>

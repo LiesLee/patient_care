@@ -20,6 +20,9 @@ import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
 @ActivityFragmentInject(contentViewId = R.layout.act_play_video)
 public class PlayVideoActivity extends BaseActivity {
 
+    private String videoPath;
+    private String title;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);  // 隐藏状态栏
@@ -28,8 +31,9 @@ public class PlayVideoActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        String videoPath =  FileUtils.SDPATH + "/Download/test_video.mp4";
-        JCVideoPlayerStandard.startFullscreen(this, JCVideoPlayerStandard.class, videoPath, "测试视频啊收到了饭卡了空手道解放立刻就受到法律；搭街坊；阿历克斯大家发；顺利打开附件a；撒开绿灯解放；阿拉山口大家发送");
+        videoPath =  getIntent().getStringExtra("url");
+        title =  getIntent().getStringExtra("title");
+        JCVideoPlayerStandard.startFullscreen(this, JCVideoPlayerStandard.class, videoPath, title);
 
     }
 

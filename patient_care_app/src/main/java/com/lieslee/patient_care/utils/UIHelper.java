@@ -215,4 +215,31 @@ public class UIHelper {
         }
     }
 
+    /**
+     * check file exit
+     * @param baseActivity
+     * @param news
+     * @return
+     */
+    public static boolean newsFileisExit(BaseActivity baseActivity,News news){
+        boolean isExit = true;
+        if(!TextUtils.isEmpty(news.getHtmlPath(baseActivity))){
+            isExit = FileUtils.isFileExist(news.getHtmlPath(baseActivity));
+        }
+
+        if(!TextUtils.isEmpty(news.getCoverImagePath(baseActivity))){
+            isExit = FileUtils.isFileExist(news.getCoverImagePath(baseActivity));
+        }
+
+        if(!TextUtils.isEmpty(news.getAudioPath(baseActivity))){
+            isExit = FileUtils.isFileExist(news.getAudioPath(baseActivity));
+        }
+
+        if(!TextUtils.isEmpty(news.getVideoPath(baseActivity))){
+            isExit = FileUtils.isFileExist(news.getVideoPath(baseActivity));
+        }
+
+        return isExit;
+    }
+
 }

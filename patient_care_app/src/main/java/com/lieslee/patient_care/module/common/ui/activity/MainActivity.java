@@ -20,7 +20,7 @@ import java.util.List;
 
 import butterknife.Bind;
 
-@ActivityFragmentInject(contentViewId = R.layout.act_main, toolbarTitle = R.string.app_name)
+@ActivityFragmentInject(contentViewId = R.layout.act_main, toolbarTitle = R.string.home)
 public class MainActivity extends BaseActivity {
 
     @Bind(R.id.vp_main)

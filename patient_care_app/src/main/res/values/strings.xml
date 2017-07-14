@@ -4,4 +4,5 @@
     <string name="sign_key_release">4b111cc14a33b88e37e2e2934f493458</string>
     <string name="api_ver">1.0</string>
     <string name="news_detail">资讯详情</string>
+    <string name="home">首页</string>
 </resources>

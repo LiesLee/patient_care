@@ -62,7 +62,7 @@
                 android:textColor="@color/text_black"
                 android:layout_marginBottom="15dp"
                 android:textStyle="bold"
-                android:textSize="25dp"
+                android:textSize="20dp"
                 android:text="高血压日常饮食注意事项"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -71,7 +71,7 @@
                 android:id="@+id/tv_date"
                 android:text="发表于 2017-06-21  00:06"
                 android:textColor="@color/grey"
-                android:textSize="20dp"
+                android:textSize="15dp"
                 android:singleLine="true"
                 android:layout_marginBottom="15dp"
                 android:maxLines="1"
@@ -108,7 +108,7 @@
                         android:id="@+id/tv_audio_title"
                         android:text="高血压日常饮食注意事项"
                         android:textColor="@color/text_black"
-                        android:textSize="20dp"
+                        android:textSize="18dp"
                         android:singleLine="true"
                         android:maxLines="1"
                         android:ellipsize="end"
@@ -123,7 +123,7 @@
                         android:maxLines="1"
                         android:singleLine="true"
                         android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus"
-                        android:textSize="16.5dp"/>
+                        android:textSize="14dp"/>
 
                     <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
                         android:id="@+id/rvpb_bar"
@@ -144,7 +144,7 @@
                         <TextView
                             android:id="@+id/tv_audio_progress_time"
                             android:textColor="@color/grey"
-                            android:textSize="15dp"
+                            android:textSize="14dp"
                             android:text="00:00"
                             android:layout_alignParentLeft="true"
                             android:layout_width="wrap_content"
@@ -152,7 +152,7 @@
                         <TextView
                             android:id="@+id/tv_audio_total_time"
                             android:textColor="@color/grey"
-                            android:textSize="15dp"
+                            android:textSize="14dp"
                             android:text="08:12"
                             android:layout_alignParentRight="true"
                             android:layout_width="wrap_content"
