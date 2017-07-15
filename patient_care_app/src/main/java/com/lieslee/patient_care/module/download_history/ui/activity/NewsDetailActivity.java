@@ -21,6 +21,7 @@ import com.lieslee.patient_care.R;
 import com.lieslee.patient_care.bean.News;
 import com.lieslee.patient_care.event.ME_RedownloadNews;
 import com.lieslee.patient_care.module.common.ui.activity.PlayVideoActivity;
+import com.lieslee.patient_care.module.common.ui.activity.VideoActivity;
 import com.lieslee.patient_care.module.download_history.presenter.NewsDetailPresenter;
 import com.lieslee.patient_care.module.download_history.view.NewsDetailView;
 import com.lieslee.patient_care.utils.DialogHelper;
@@ -146,7 +147,13 @@ public class NewsDetailActivity extends BaseActivity<NewsDetailPresenter> implem
 
             case R.id.rl_video:
                 if(news!=null && !TextUtils.isEmpty(news.getVideoPath(baseActivity))){
-                    Intent intentVideo = new Intent(baseActivity, PlayVideoActivity.class);
+
+                    if (mPlayer.isPlaying()) {//正在播放音频
+                        mPlayer.pause();
+                        isAudioPause = true;
+                    }
+
+                    Intent intentVideo = new Intent(baseActivity, VideoActivity.class);
                     intentVideo.putExtra("url", news.getVideoPath(baseActivity));
                     intentVideo.putExtra("title", news.getVideo().getTitle() == null ? "" : news.getVideo().getTitle());
                     startActivity(intentVideo);
@@ -291,7 +298,7 @@ public class NewsDetailActivity extends BaseActivity<NewsDetailPresenter> implem
             KLog.e("html path : " + news.getHtmlPath(baseActivity));
             if (!TextUtils.isEmpty(news.getHtmlPath(baseActivity))) {
                 webview.setVisibility(View.VISIBLE);
-                UIHelper.initWebView(baseActivity, webview, pw_loding, news.getHtmlPath(baseActivity));
+                UIHelper.initWebView(baseActivity, webview, pw_loding, "file:///" + news.getHtmlPath(baseActivity));
             } else {
                 webview.setVisibility(View.GONE);
                 pw_loding.setVisibility(View.GONE);

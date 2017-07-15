@@ -117,7 +117,7 @@ public class LauncherActivity extends BaseActivity implements MultiplePermission
                     gotoMainActivity();
                 }
             }
-        }, 0, 1000);// 这里百毫秒
+        }, 0, 500);// 这里百毫秒
     }
 
     private void gotoMainActivity() {

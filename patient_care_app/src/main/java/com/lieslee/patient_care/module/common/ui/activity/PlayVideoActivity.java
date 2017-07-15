@@ -9,6 +9,8 @@ import com.common.annotation.ActivityFragmentInject;
 import com.common.base.ui.BaseActivity;
 import com.lieslee.patient_care.R;
 import com.lieslee.patient_care.utils.FileUtils;
+import com.shuyu.gsyvideoplayer.GSYVideoPlayer;
+import com.shuyu.gsyvideoplayer.utils.Debuger;
 
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
