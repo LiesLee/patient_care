@@ -81,7 +81,6 @@ dependencies {
     compile 'com.liulishuo.filedownloader:library:1.6.0'
     compile project(':CommonLibrary')
     testCompile 'junit:junit:4.12'
-    compile project(':jcvideoplayer-lib')
     compile 'com.shuyu:GSYVideoPlayer:2.0.1'
 }
 

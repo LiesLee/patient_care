@@ -20,7 +20,6 @@ import com.common.utils.FastJsonUtil;
 import com.lieslee.patient_care.R;
 import com.lieslee.patient_care.bean.News;
 import com.lieslee.patient_care.event.ME_RedownloadNews;
-import com.lieslee.patient_care.module.common.ui.activity.PlayVideoActivity;
 import com.lieslee.patient_care.module.common.ui.activity.VideoActivity;
 import com.lieslee.patient_care.module.download_history.presenter.NewsDetailPresenter;
 import com.lieslee.patient_care.module.download_history.view.NewsDetailView;
