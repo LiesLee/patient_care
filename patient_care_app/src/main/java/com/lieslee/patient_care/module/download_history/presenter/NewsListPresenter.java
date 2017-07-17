@@ -6,9 +6,12 @@ import com.common.utils.FastJsonUtil;
 import com.lieslee.patient_care.bean.Audio;
 import com.lieslee.patient_care.bean.News;
 import com.lieslee.patient_care.bean.NewsListResponse;
+import com.lieslee.patient_care.bean.Video;
 import com.lieslee.patient_care.common.Constant;
 import com.lieslee.patient_care.dao.GreenDaoManager;
+import com.lieslee.patient_care.dao.gen.AudioDao;
 import com.lieslee.patient_care.dao.gen.NewsDao;
+import com.lieslee.patient_care.dao.gen.VideoDao;
 import com.lieslee.patient_care.http.HttpUtil;
 import com.lieslee.patient_care.http.protocol.CommonProtocol;
 import com.lieslee.patient_care.module.download_history.view.NewsListView;
@@ -30,6 +33,8 @@ import rx.schedulers.Schedulers;
  */
 
 public class NewsListPresenter extends BasePresenterImpl<NewsListView> {
+    Long firstTime = -1L;
+
     public NewsListPresenter(NewsListView view) {
         super(view);
     }
@@ -77,8 +82,44 @@ public class NewsListPresenter extends BasePresenterImpl<NewsListView> {
         Subscription subscribes = Observable.create(new Observable.OnSubscribe<List<News>>() {
             @Override
             public void call(Subscriber<? super List<News>> subscriber) {
-                subscriber.onNext(GreenDaoManager.getInstance().getNewSession().getNewsDao().queryBuilder()
-                        .orderDesc(NewsDao.Properties.Timestamp).offset(offset * 5).limit(5).list());
+                List<News> list = null;
+                if(isFirst){
+                    list = GreenDaoManager.getInstance().getNewSession().getNewsDao().queryBuilder()
+                            .orderDesc(NewsDao.Properties.Timestamp).offset(offset * Constant.DB_PAGE_SIZE).limit(Constant.DB_PAGE_SIZE).list();
+                    if(list!=null && list.size() > 0){
+                        firstTime = list.get(0).getTimestamp();
+                    }
+                }else{
+                    if(firstTime > 0){
+                        list = GreenDaoManager.getInstance().getNewSession().getNewsDao().queryBuilder().where(NewsDao.Properties.Timestamp.lt(firstTime))
+                                .orderDesc(NewsDao.Properties.Timestamp).offset(offset * Constant.DB_PAGE_SIZE).limit(Constant.DB_PAGE_SIZE).list();
+                    }else{
+                        list = GreenDaoManager.getInstance().getNewSession().getNewsDao().queryBuilder()
+                                .orderDesc(NewsDao.Properties.Timestamp).offset(offset * Constant.DB_PAGE_SIZE).limit(Constant.DB_PAGE_SIZE).list();
+                    }
+                }
+
+                if(list!=null && list.size() > 0){
+                    for(News news : list){
+                        Video video = null;
+                        Audio audio = null;
+                        if(news!=null && news.getAudio_id() != null && news.getAudio_id() != 0L){
+
+                            audio = GreenDaoManager.getInstance().getNewSession().getAudioDao().queryBuilder()
+                                    .where(AudioDao.Properties.Id.eq(news.getAudio_id())).unique();
+                            news.setAudio(audio);
+                        }
+
+                        if(news!=null && news.getVideo_id() != null && news.getVideo_id() != 0L){
+                            video = GreenDaoManager.getInstance().getNewSession().getVideoDao().queryBuilder()
+                                    .where(VideoDao.Properties.Id.eq(news.getVideo_id())).unique();
+                            news.setVideo(video);
+                        }
+
+                    }
+                }
+
+                subscriber.onNext(list);
                 subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io())
@@ -94,6 +135,7 @@ public class NewsListPresenter extends BasePresenterImpl<NewsListView> {
                 .subscribe(new Observer<List<News>>() {
                     @Override
                     public void onNext(List<News> data) {
+                        if(data!=null && data.size() > 0) KLog.json(FastJsonUtil.t2Json2(data));
                         if (mView != null) {
                             mView.getNewsFromDBSuccessed(data);
                         }

@@ -16,6 +16,7 @@ import com.lai.library.ButtonStyle;
 import com.lieslee.patient_care.R;
 import com.lieslee.patient_care.bean.News;
 import com.lieslee.patient_care.bean.NewsListResponse;
+import com.lieslee.patient_care.common.Constant;
 import com.lieslee.patient_care.dao.GreenDaoManager;
 import com.lieslee.patient_care.dao.gen.NewsDao;
 import com.lieslee.patient_care.event.ME_NewsDelete;
@@ -61,6 +62,8 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
     LinearLayoutManager mLinearLayoutManager;
     int page = 1;
     int offset = 0;
+    /** is no data form net */
+    private boolean hasdata = true;
 
     @Override
     protected void initView(View fragmentRootView) {
@@ -125,11 +128,14 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
 
     @Override
     public void loadNewsListSuccessed(NewsListResponse data) {
+        hasdata = false;
         if(data!=null && data.getLists().size() > 0){
             ll_pull.setVisibility(View.GONE);
+            hasdata = true;
         }else{
             DialogHelper.showTipsDialog(baseActivity, "暂时没有更多资讯哦 ~ ", "好的", null);
-            ll_pull.setVisibility(View.VISIBLE);
+            ll_pull.setVisibility(View.GONE);
+            hasdata = false;
         }
 
         if(page == 1){
@@ -157,17 +163,17 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
                 if(page < 1) page = 1;
             }
         }
-
-        //post notice to download
-        EventBus.getDefault().post(new ME_StartDownLoad(0));
-
+        if(hasdata){
+            //post notice to download
+            EventBus.getDefault().post(new ME_StartDownLoad(0));
+        }
     }
 
     @Override
     public void getNewsFromDBSuccessed(final List<News> data) {
         if(offset == 0){
             mAdapter.setData(data);
-            if(mAdapter.getData()!=null && mAdapter.getData().size() > 4){
+            if(mAdapter.getData()!=null && mAdapter.getData().size() > Constant.DB_PAGE_SIZE - 1 ){
                 mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
                     @Override
                     public void onLoadMoreRequested() {
@@ -301,7 +307,10 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
                 startDownload();
             }else{
                 KLog.e("=======全部下载完成=======");
-                ll_pull.setVisibility(View.VISIBLE);
+                if(hasdata){
+                    ll_pull.setVisibility(View.VISIBLE);
+                }
+
             }
         }
     }
