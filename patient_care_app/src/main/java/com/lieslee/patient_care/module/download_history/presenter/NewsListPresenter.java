@@ -101,15 +101,14 @@ public class NewsListPresenter extends BasePresenterImpl<NewsListView> {
 
                 if(list!=null && list.size() > 0){
                     for(News news : list){
+                        news.setIsInitStatus(false);
                         Video video = null;
                         Audio audio = null;
                         if(news!=null && news.getAudio_id() != null && news.getAudio_id() != 0L){
-
                             audio = GreenDaoManager.getInstance().getNewSession().getAudioDao().queryBuilder()
                                     .where(AudioDao.Properties.Id.eq(news.getAudio_id())).unique();
                             news.setAudio(audio);
                         }
-
                         if(news!=null && news.getVideo_id() != null && news.getVideo_id() != 0L){
                             video = GreenDaoManager.getInstance().getNewSession().getVideoDao().queryBuilder()
                                     .where(VideoDao.Properties.Id.eq(news.getVideo_id())).unique();
@@ -163,8 +162,28 @@ public class NewsListPresenter extends BasePresenterImpl<NewsListView> {
         Subscription subscribes = Observable.create(new Observable.OnSubscribe<List<News>>() {
             @Override
             public void call(Subscriber<? super List<News>> subscriber) {
-                subscriber.onNext(GreenDaoManager.getInstance().getNewSession().getNewsDao().queryBuilder()
-                        .orderDesc(NewsDao.Properties.Timestamp).list());
+                List<News> list = GreenDaoManager.getInstance().getNewSession().getNewsDao().queryBuilder()
+                        .orderDesc(NewsDao.Properties.Timestamp).list();
+                if(list!=null && list.size() > 0){
+                    firstTime = list.get(0).getTimestamp();
+                    for(News news : list){
+                        news.setIsInitStatus(false);
+                        Video video = null;
+                        Audio audio = null;
+                        if(news!=null && news.getAudio_id() != null && news.getAudio_id() != 0L){
+                            audio = GreenDaoManager.getInstance().getNewSession().getAudioDao().queryBuilder()
+                                    .where(AudioDao.Properties.Id.eq(news.getAudio_id())).unique();
+                            news.setAudio(audio);
+                        }
+                        if(news!=null && news.getVideo_id() != null && news.getVideo_id() != 0L){
+                            video = GreenDaoManager.getInstance().getNewSession().getVideoDao().queryBuilder()
+                                    .where(VideoDao.Properties.Id.eq(news.getVideo_id())).unique();
+                            news.setVideo(video);
+                        }
+
+                    }
+                }
+                subscriber.onNext(list);
                 subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io())

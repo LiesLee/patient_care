@@ -3,6 +3,7 @@ package com.lieslee.patient_care.bean;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.lieslee.patient_care.application.PatientCareApplication;
 import com.lieslee.patient_care.utils.FileUtils;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -254,10 +255,11 @@ public class News {
     public void initFileDownloadStatus(){
         if(!isInitStatus){
             if(statuses == null) statuses = new ArrayList<>();
-            if(!TextUtils.isEmpty(html_download)) statuses.add(new FileDownLoadStatus(0, html_download, false));
-            if(!TextUtils.isEmpty(cover_image)) statuses.add(new FileDownLoadStatus(1,cover_image,false));
-            if (audio != null && !TextUtils.isEmpty(audio.getUrl())) statuses.add(new FileDownLoadStatus(2,audio.getUrl(), false));
-            if (video!=null && !TextUtils.isEmpty(video.getUrl())) statuses.add(new FileDownLoadStatus(3,video.getUrl(), false));
+            statuses.clear();
+            if(!TextUtils.isEmpty(html_download)) statuses.add(new FileDownLoadStatus(0, html_download, false, getHtmlPath(PatientCareApplication.getInstance())));
+            if(!TextUtils.isEmpty(cover_image)) statuses.add(new FileDownLoadStatus(1,cover_image,false, getCoverImagePath(PatientCareApplication.getInstance())));
+            if (audio != null && !TextUtils.isEmpty(audio.getUrl())) statuses.add(new FileDownLoadStatus(2,audio.getUrl(), false, getAudioPath(PatientCareApplication.getInstance())));
+            if (video!=null && !TextUtils.isEmpty(video.getUrl())) statuses.add(new FileDownLoadStatus(3,video.getUrl(), false, getVideoPath(PatientCareApplication.getInstance())));
             isInitStatus = true;
         }
     }

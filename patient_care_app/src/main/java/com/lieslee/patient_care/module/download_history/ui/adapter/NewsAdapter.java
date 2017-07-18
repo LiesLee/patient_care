@@ -22,7 +22,9 @@ import com.lieslee.patient_care.event.ME_RedownloadNews;
 import com.lieslee.patient_care.event.ME_StartDownLoad;
 import com.lieslee.patient_care.module.download_history.ui.activity.NewsDetailActivity;
 import com.lieslee.patient_care.utils.DialogHelper;
+import com.lieslee.patient_care.utils.FileUtils;
 import com.lieslee.patient_care.utils.GlideUtil;
+import com.lieslee.patient_care.utils.UIHelper;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.exception.FileDownloadHttpException;
 import com.socks.library.KLog;
@@ -149,8 +151,14 @@ public class NewsAdapter extends BaseAdapter<News> {
                 news.setProgress(news.getProgress() + 1f);
                 KLog.e("===Progress==="+news.getProgress());
                 if(news.getProgress() == news.getFileDownLoadStatus().size()){
-                    news.setDownload_status(2);
-                    KLog.e("news下载完成");
+                    if(UIHelper.newsFileisExit((BaseActivity) mContext, news)){
+                        news.setDownload_status(2);
+                        KLog.e("news下载完成");
+                    }else{
+                        news.setDownload_status(-1);
+                        news.setProgress(0);
+                        KLog.e("news下载失败");
+                    }
                     //发送消息通知观察者
                     EventBus.getDefault().post(new ME_StartDownLoad(0));
                     EventBus.getDefault().post(new ME_NewsSave(news));

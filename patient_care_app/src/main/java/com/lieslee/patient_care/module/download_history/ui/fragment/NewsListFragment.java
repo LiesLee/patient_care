@@ -27,6 +27,7 @@ import com.lieslee.patient_care.module.download_history.presenter.NewsListPresen
 import com.lieslee.patient_care.module.download_history.ui.adapter.NewsAdapter;
 import com.lieslee.patient_care.module.download_history.view.NewsListView;
 import com.lieslee.patient_care.utils.DialogHelper;
+import com.lieslee.patient_care.utils.FileUtils;
 import com.lieslee.patient_care.utils.UIHelper;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
@@ -39,6 +40,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.Bind;
@@ -119,11 +121,11 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
     public void getNotDownloadNews(List<News> data) {
         if(data != null && data.size() > 0){ //has not download news
             ll_pull.setVisibility(View.GONE);
-            mPresenter.getAllNewsFromDB();
+            //mPresenter.getAllNewsFromDB();
         }else{
-            mPresenter.getNewsFromDB(offset, true);
             ll_pull.setVisibility(View.VISIBLE);
         }
+        mPresenter.getNewsFromDB(offset, true);
     }
 
     @Override
@@ -219,7 +221,9 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
                 }
             }
             @Override
-            protected void blockComplete(BaseDownloadTask task) {}
+            protected void blockComplete(BaseDownloadTask task) {
+
+            }
             @Override
             protected void retry(final BaseDownloadTask task, final Throwable ex, final int retryingTimes, final int soFarBytes) {}
             @Override
@@ -308,7 +312,19 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
             }else{
                 KLog.e("=======全部下载完成=======");
                 if(hasdata){
-                    ll_pull.setVisibility(View.VISIBLE);
+                    boolean isAllDone = true;
+                    Iterator<News> it = mAdapter.getData().iterator();
+                    while (it.hasNext()){
+                        News news = it.next();
+                        // no not download and downloading
+                        if(news.getDownload_status() == 0 || news.getDownload_status() == 1){
+                            isAllDone = false;
+                            break;
+                        }
+                    }
+                    if(isAllDone){
+                        ll_pull.setVisibility(View.VISIBLE);
+                    }
                 }
 
             }
@@ -334,7 +350,19 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
     public void onMessageEvent(ME_RedownloadNews event) {
         KLog.e("重新下载");
         News news = event.news;
+        if(news != null){
+            if(FileUtils.isFileExist(news.getPath(baseActivity))){
+                FileUtils.deleteFolder(news.getPath(baseActivity));
+            }
+            news.setDownload_status(-1);
+            news.setProgress(0);
+            mPresenter.updateNewsIsDownloaded(news);
+        }
+
+
         FileDownloadListener queueTarget = new FileDownloadListener() {
+
+            Long errorId = -1L;
             long time = 0L;
             @Override
             protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {}
@@ -345,23 +373,36 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
                 long now = System.currentTimeMillis();
                 if(now - time > 500){
                     time = now;
-                    if(mAdapter!=null) mAdapter.updateProgress(task, soFarBytes, totalBytes);
+                    if (mAdapter != null) mAdapter.updateProgress(task, soFarBytes, totalBytes);
                 }
             }
+
             @Override
-            protected void blockComplete(BaseDownloadTask task) {}
+            protected void blockComplete(BaseDownloadTask task) {
+
+            }
+
             @Override
-            protected void retry(final BaseDownloadTask task, final Throwable ex, final int retryingTimes, final int soFarBytes) {}
+            protected void retry(final BaseDownloadTask task, final Throwable ex, final int retryingTimes, final int soFarBytes) {
+            }
+
             @Override
             protected void completed(BaseDownloadTask task) {
-                if(mAdapter!=null) mAdapter.redownloadUpDateItem(task, 0,null);
+                if (mAdapter != null) mAdapter.redownloadUpDateItem(task, 0, null);
             }
+
             @Override
-            protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {}
+            protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+            }
+
             @Override
             protected void error(BaseDownloadTask task, Throwable e) {
                 KLog.e(e);
+                Long id = (Long) task.getTag();
+                if(errorId.equals(id)) return;
+                errorId = (Long) task.getTag();
                 if(mAdapter!=null) mAdapter.redownloadUpDateItem(task, 1, e);
+
             }
             @Override
             protected void warn(BaseDownloadTask task) {}
@@ -398,16 +439,24 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
                     .setTag(news.getId())
                     .setPath(news.getVideoPath(baseActivity)));
         }
+
+
         if(tasks.size() > 0){ //有下载任务
             //并行下载
             //queueSet.downloadTogether(tasks);
             //串行下载（一个一个来）
             queueSet.downloadSequentially(tasks);
-            news.setDownload_status(1);
+            News n = mAdapter.getNewsById(news.getId());
+            if(n != null) {
+                n.setDownload_status(1);
+                n.setProgress(0);
+            }
             mAdapter.notifyDataSetChanged();
             queueSet.start();
+
         }else{ //无下载任务
-            news.setDownload_status(2);
+            News n = mAdapter.getNewsById(news.getId());
+            if(n != null) n.setDownload_status(2);
             mAdapter.notifyDataSetChanged();
         }
 
@@ -415,4 +464,9 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
 
     }
 
+    @Override
+    public void onDestroy() {
+        FileDownloader.getImpl().pauseAll();
+        super.onDestroy();
+    }
 }

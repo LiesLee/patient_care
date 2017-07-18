@@ -11,12 +11,22 @@ public class FileDownLoadStatus {
     private String url;
     private boolean isDone;
     private float progress;
+    private String path;
 
 
-    public FileDownLoadStatus(int type, String url, boolean isDone) {
+    public FileDownLoadStatus(int type, String url, boolean isDone,String path) {
         this.type = type;
         this.url = url;
         this.isDone = isDone;
+        this.path = path;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public int getType() {

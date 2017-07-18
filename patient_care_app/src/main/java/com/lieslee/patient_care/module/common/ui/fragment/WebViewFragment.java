@@ -12,6 +12,7 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
 
 import com.common.annotation.ActivityFragmentInject;
 import com.common.base.presenter.BasePresenterImpl;
@@ -30,10 +31,21 @@ public class WebViewFragment extends BaseFragment{
     private ProgressWebView webview;
     private ProgressWheel pw_loding;
 
+    ImageView iv_web_back;
+    ImageView iv_web_home;
+    private String url;
+
+
     @Override
     protected void initView(View fragmentRootView) {
         webview = (ProgressWebView) findViewById(R.id.webview);
         pw_loding = (ProgressWheel) findViewById(R.id.pw_loding);
+        iv_web_back = (ImageView) findViewById(R.id.iv_web_back);
+        iv_web_home = (ImageView) findViewById(R.id.iv_web_home);
+
+        iv_web_back.setOnClickListener(this);
+        iv_web_home.setOnClickListener(this);
+
 
         //圈圈进度条
         pw_loding.setBarWidth(ViewUtil.dp2px(baseActivity, 5));
@@ -72,8 +84,10 @@ public class WebViewFragment extends BaseFragment{
 
         });
 
-        String url = getArguments().getString("url");
+        url = getArguments().getString("url");
         webview.loadUrl(url);
+
+
     }
 
     @Override
@@ -83,7 +97,25 @@ public class WebViewFragment extends BaseFragment{
 
     @Override
     public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.iv_web_home:
+                if (webview != null) {
+                    webview.clearCache(true);
+                    webview.clearHistory();
+                    webview.loadUrl(url);
+                }
 
+                break;
+
+            case R.id.iv_web_back:
+                if (webview != null) {
+                    if (webview.canGoBack()) webview.goBack();
+                }
+                break;
+
+            default:
+                break;
+        }
     }
 
     public class WebChromeClient extends android.webkit.WebChromeClient {
@@ -91,7 +123,6 @@ public class WebViewFragment extends BaseFragment{
         public void onProgressChanged(WebView view, int newProgress) {
             if (newProgress == 100) {
                 webview.progressbar.setVisibility(View.GONE);
-
                 if(pw_loding.getVisibility() == View.VISIBLE) {
                     pw_loding.startAnimation(AnimationUtils.loadAnimation(baseActivity, R.anim.activity_close));
                     pw_loding.setVisibility(View.GONE);
