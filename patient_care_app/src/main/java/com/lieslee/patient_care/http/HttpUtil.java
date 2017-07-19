@@ -10,7 +10,6 @@ import com.common.utils.NetUtil;
 import com.lieslee.patient_care.R;
 import com.lieslee.patient_care.application.PatientCareApplication;
 import com.socks.library.KLog;
-import com.umeng.analytics.MobclickAgent;
 
 import java.net.SocketTimeoutException;
 
@@ -279,7 +278,6 @@ public class HttpUtil {
         } catch (Exception e) {
             Log.e("requestCallback", "数据回调后处理错误: " + e.toString());
             e.printStackTrace();
-            MobclickAgent.reportError(PatientCareApplication.getInstance(), e);
             if(baseView == null)return t;
             if(requestCallback == null)return t;
             requestCallback.requestError(3, "数据回调后处理错误");

@@ -30,7 +30,6 @@ import com.common.annotation.ActivityFragmentInject;
 import com.common.base.presenter.BasePresenter;
 import com.flyco.dialog.widget.NormalDialog;
 import com.flyco.dialog.widget.base.BaseDialog;
-import com.umeng.analytics.MobclickAgent;
 import com.views.ProgressWheel;
 import com.views.ViewsHelper;
 import com.views.util.ToastUtil;

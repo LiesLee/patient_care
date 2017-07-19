@@ -62,7 +62,7 @@ dependencies {
     compile 'org.ligboy.retrofit2:converter-fastjson-android:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     //友盟统计
-    compile 'com.umeng.analytics:analytics:latest.integration'
+    //compile 'com.umeng.analytics:analytics:latest.integration'
     //权限获取
     compile 'com.karumi:dexter:2.2.2'
     //二维码扫描

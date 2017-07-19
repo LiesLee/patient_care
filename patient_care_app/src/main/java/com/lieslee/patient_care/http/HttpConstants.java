@@ -51,7 +51,7 @@ public class HttpConstants {
      */
     public static String getCustomerBaseUrl() {
         return BuildConfig.DEBUG ?
-                "http://139.198.5.221/" :
+                "http://139.198.5.221/test/" :
                 "http://139.198.5.221/";
     }
 

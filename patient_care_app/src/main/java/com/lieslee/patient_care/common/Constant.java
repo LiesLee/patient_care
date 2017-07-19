@@ -20,5 +20,5 @@ public class Constant {
     public static final int PROGRESS_TYPE_LIST = 1;
     /** mView显示的Loading类型--layout进度条 */
     public static final int PROGRESS_TYPE_LAYOUT = 2;
-    public static final int DB_PAGE_SIZE = 5;
+    public static final int DB_PAGE_SIZE = 10;
 }
